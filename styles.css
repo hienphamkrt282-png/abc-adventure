@@ -24,7 +24,7 @@ h1{font-size:clamp(22px,4vw,33px);line-height:1.13;margin:0 0 7px;font-weight:10
 .mascot-star{position:absolute;right:-16px;top:0;color:#fff;font-size:22px;text-shadow:0 2px 4px #a18aef}
 .game-card{background:#fff;border:1px solid #eeedf8;border-radius:24px;margin-top:15px;padding:19px 21px;box-shadow:0 12px 35px #4c4a8110}
 .game-heading{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.level-label{font-size:10px;font-weight:1000;color:#9b91df;letter-spacing:1.4px}
+.level-label{font-size:9px;font-weight:1000;color:#9b91df;letter-spacing:.8px;line-height:1.35;max-width:420px}
 h2{font-size:19px;margin:2px 0 0;font-weight:1000}
 .progress-wrap{width:115px;text-align:right;font-size:11px;font-weight:900;color:var(--muted)}
 .progress-track{height:7px;background:#eeeefa;border-radius:20px;margin-top:6px;overflow:hidden}
@@ -39,9 +39,9 @@ h2{font-size:19px;margin:2px 0 0;font-weight:1000}
 .listen-button{background:#eeeaff;color:#5c50c9;border-radius:25px;padding:9px 12px;font-size:11px;font-weight:1000;display:flex;gap:6px;align-items:center;white-space:nowrap}
 .answer-area{padding:15px 2px 3px;text-align:center}
 .answer-area>p:first-child{font-size:12px;font-weight:900;color:#6d7791;margin:0 0 11px}
-.slots,.letter-bank{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
-.slot{width:46px;height:49px;border:2px dashed #c9c4f2;border-radius:12px;background:#faf9ff;display:grid;place-items:center;font-size:21px;font-weight:1000;color:var(--purple)}
-.slot.placeholder{color:rgba(105,87,217,.28);background:#faf9ff}.slot.filled{border-style:solid;background:#eeeaff}.slot.correct{background:#dff8eb;border-color:#71d4a6;color:#26976a}
+.slots,.letter-bank{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.slot{width:58px;height:60px;border:2px dashed #bcb4f0;border-radius:14px;background:#faf9ff;display:grid;place-items:center;font-size:25px;font-weight:1000;color:var(--purple);box-shadow:0 3px 0 rgba(105,87,217,.06);transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}
+.slot.placeholder{color:rgba(105,87,217,.36);background:#faf9ff}.slot.filled{border-style:solid;background:#eeeaff}.slot.correct{background:#dff8eb;border-color:#71d4a6;color:#26976a;box-shadow:0 4px 0 rgba(63,183,128,.12)}
 .letter-bank{margin-top:12px;min-height:76px;align-items:flex-end;gap:12px}
 /* The lower letter bank is now a row of animated mini 3D-style letter mascots. */
 .letter-tile{--creature:#ff9b91;--creature-dark:#dc7777;position:relative;width:58px;height:72px;padding:0;background:transparent;border:0;box-shadow:none;color:inherit;display:grid;place-items:center;overflow:visible;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;transition:filter .18s ease,opacity .18s ease}
@@ -73,7 +73,7 @@ h2{font-size:19px;margin:2px 0 0;font-weight:1000}
 @keyframes bank-excited{0%,100%{transform:translateY(0) rotate(-7deg) scale(1)}50%{transform:translateY(-9px) rotate(7deg) scale(1.06)}}
 .letter-tile:focus-visible{outline:2px solid #8c7cf0;outline-offset:2px;border-radius:14px}
 .letter-tile.used{opacity:.16;filter:grayscale(.8);pointer-events:none}
-.letter-tile.drag-source{opacity:.18;cursor:grabbing}
+.letter-tile.drag-source{opacity:.38;cursor:grabbing;filter:saturate(.8)}
 .letter-tile.drag-source .bank-creature{animation:none}
 .feedback{min-height:18px;margin:10px 0 0;font-size:11px;font-weight:900;color:#8a91a7}.feedback.good{color:#25976c}.feedback.try{color:#c58b36}
 .game-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0eff7;padding-top:13px;margin-top:10px}
@@ -98,17 +98,25 @@ footer{display:flex;justify-content:space-between;gap:8px;color:#9aa1b4;font-siz
  .word-info{gap:8px;padding:8px}.picture-badge{width:43px;height:43px;font-size:25px}.word-copy strong{font-size:13px}.word-copy span{font-size:10px}
  .listen-button{padding:9px 9px;font-size:9px;gap:4px}
  .answer-area{padding-top:12px}.answer-area>p:first-child{font-size:11px}
- .slots,.letter-bank{gap:6px}.slot{width:39px;height:44px;font-size:19px;border-radius:10px}.letter-tile{width:52px;height:68px}.bank-creature{transform:scale(.92);transform-origin:bottom center}
+ .slots,.letter-bank{gap:6px}.slot{width:48px;height:51px;font-size:22px;border-radius:12px}.letter-tile{width:52px;height:68px}.bank-creature{transform:scale(.92);transform-origin:bottom center}
  .game-footer{padding-top:11px}.primary-button,.secondary-button{padding:9px 11px;font-size:10px}
  .bottom-row{align-items:center}.mini-card p{max-width:155px}.reset-button{font-size:10px}
  footer{flex-direction:column;text-align:center}
 }
-@media(max-width:360px){.status-pill{display:none}.scene-wrap{height:205px}.listen-button span:last-child{display:none}.slot{width:35px}.letter-tile{width:48px;height:64px}.bank-creature{transform:scale(.86);transform-origin:bottom center}}
+@media(max-width:360px){.status-pill{display:none}.scene-wrap{height:205px}.listen-button span:last-child{display:none}.slot{width:43px;height:47px;font-size:20px}.letter-tile{width:48px;height:64px}.bank-creature{transform:scale(.86);transform-origin:bottom center}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 
 /* Real pointer-based drag and drop from the letter bank into matching slots */
 .letter-tile{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
-.letter-tile.drag-source{opacity:.28;cursor:grabbing}
-.letter-drag-ghost{position:fixed!important;z-index:99999!important;pointer-events:none!important;margin:0!important;opacity:.96;transform:scale(1.08);box-shadow:0 10px 24px rgba(76,62,160,.25)!important}
+.letter-tile.drag-source{opacity:.38;cursor:grabbing;filter:saturate(.8)}
+.letter-drag-ghost{position:fixed;left:0;top:0;width:64px;height:78px;display:grid;place-items:center;z-index:99999;pointer-events:none;margin:0;opacity:1;transform:translate(-50%,-58%) scale(1.18);filter:drop-shadow(0 12px 12px rgba(76,62,160,.28));will-change:left,top;overflow:visible}
+.letter-drag-ghost .bank-creature{animation:bank-excited .42s ease-in-out infinite!important;filter:drop-shadow(0 7px 3px rgba(69,72,112,.2))}
+.letter-drag-ghost .bank-arm-left{animation:bank-wave-left .42s ease-in-out infinite}
+.letter-drag-ghost .bank-arm-right{animation:bank-wave-right .42s ease-in-out infinite}
 .slot{transition:background .15s ease,border-color .15s ease,transform .15s ease}
 .slot:active{transform:scale(.97)}
+
+/* Version 0.6: larger, child-friendly target areas */
+.slot.drop-hover{border-style:solid;border-color:#7b6ce4;background:#eeeaff;transform:translateY(-3px) scale(1.04);box-shadow:0 7px 0 rgba(105,87,217,.12),0 0 0 4px rgba(137,121,239,.10)}
+.answer-area{scroll-margin-top:12px}
+@media(max-width:600px){.level-label{font-size:8px;letter-spacing:.45px;max-width:235px}.slots{gap:7px}}

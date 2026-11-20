@@ -1,4 +1,1 @@
-ABC Adventure Version 0.5
-3D letter-shaped characters and real 3D drag interaction. Start with: python -m http.server 8000
-Open: http://localhost:8000/
-Keep internet on for the first load so the Three.js modules and typeface can be cached.
+ABC Adventure Version 0.6\n100 bài học trong 5 chủ đề; ô đích 3D và ô đáp án được phóng lớn; cải thiện gợi ý vùng thả; giữ cơ chế kéo thả nhân vật 3D. Xem README.md để chạy thử và triển khai GitHub Pages.\n

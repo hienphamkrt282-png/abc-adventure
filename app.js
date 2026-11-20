@@ -5,19 +5,112 @@ import { TextGeometry } from "https://cdn.jsdelivr.net/npm/three@0.160.0/example
 let letterFont = null;
 
 const WORDS = [
-  {en:"CAT",vi:"Con mèo",emoji:"🐱"},
-  {en:"DOG",vi:"Con chó",emoji:"🐶"},
-  {en:"SUN",vi:"Mặt trời",emoji:"☀️"},
-  {en:"BUS",vi:"Xe buýt",emoji:"🚌"},
-  {en:"FISH",vi:"Con cá",emoji:"🐟"},
-  {en:"APPLE",vi:"Quả táo",emoji:"🍎"},
-  {en:"BALL",vi:"Quả bóng",emoji:"⚽"},
-  {en:"CAKE",vi:"Bánh ngọt",emoji:"🍰"}
+  {en:"CAT",vi:"Con mèo",emoji:"🐱",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"DOG",vi:"Con chó",emoji:"🐶",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"SUN",vi:"Mặt trời",emoji:"☀️",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"BUS",vi:"Xe buýt",emoji:"🚌",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"PEN",vi:"Cây bút",emoji:"🖊️",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"CUP",vi:"Cái cốc",emoji:"🥤",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"HAT",vi:"Cái mũ",emoji:"🧢",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"BED",vi:"Cái giường",emoji:"🛏️",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"BAG",vi:"Cái túi",emoji:"🎒",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"MAP",vi:"Bản đồ",emoji:"🗺️",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"PIG",vi:"Con heo",emoji:"🐷",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"FOX",vi:"Con cáo",emoji:"🦊",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"ANT",vi:"Con kiến",emoji:"🐜",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"EGG",vi:"Quả trứng",emoji:"🥚",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"BOX",vi:"Cái hộp",emoji:"📦",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"KEY",vi:"Chìa khóa",emoji:"🔑",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"FAN",vi:"Quạt",emoji:"🪭",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"BAT",vi:"Con dơi",emoji:"🦇",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"CAR",vi:"Ô tô",emoji:"🚗",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"TOY",vi:"Đồ chơi",emoji:"🧸",categoryVi:"Làm quen quanh em",categoryEn:"Around Me"},
+  {en:"BIRD",vi:"Con chim",emoji:"🐦",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"FISH",vi:"Con cá",emoji:"🐟",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"DUCK",vi:"Con vịt",emoji:"🦆",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"FROG",vi:"Con ếch",emoji:"🐸",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"LION",vi:"Sư tử",emoji:"🦁",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"BEAR",vi:"Con gấu",emoji:"🐻",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"DEER",vi:"Con nai",emoji:"🦌",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"GOAT",vi:"Con dê",emoji:"🐐",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"SHEEP",vi:"Con cừu",emoji:"🐑",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"HORSE",vi:"Con ngựa",emoji:"🐴",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"MOUSE",vi:"Con chuột",emoji:"🐭",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"TIGER",vi:"Con hổ",emoji:"🐯",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"ZEBRA",vi:"Ngựa vằn",emoji:"🦓",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"PANDA",vi:"Gấu trúc",emoji:"🐼",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"MONKEY",vi:"Con khỉ",emoji:"🐵",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"RABBIT",vi:"Con thỏ",emoji:"🐰",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"TURTLE",vi:"Rùa",emoji:"🐢",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"CAMEL",vi:"Lạc đà",emoji:"🐫",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"SNAKE",vi:"Con rắn",emoji:"🐍",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"WHALE",vi:"Cá voi",emoji:"🐳",categoryVi:"Thế giới động vật",categoryEn:"Animal World"},
+  {en:"BOOK",vi:"Quyển sách",emoji:"📘",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"DESK",vi:"Bàn học",emoji:"🪑",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"CHAIR",vi:"Cái ghế",emoji:"🪑",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"TABLE",vi:"Cái bàn",emoji:"🛋️",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"CLOCK",vi:"Đồng hồ",emoji:"🕒",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"PHONE",vi:"Điện thoại",emoji:"📱",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"TRAIN",vi:"Tàu hỏa",emoji:"🚆",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"PLANE",vi:"Máy bay",emoji:"✈️",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"TRUCK",vi:"Xe tải",emoji:"🚚",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"BIKE",vi:"Xe đạp",emoji:"🚲",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"BOAT",vi:"Thuyền",emoji:"⛵",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"DOOR",vi:"Cánh cửa",emoji:"🚪",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"LAMP",vi:"Đèn bàn",emoji:"💡",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"SOCK",vi:"Tất",emoji:"🧦",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"SHOE",vi:"Giày",emoji:"👟",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"BALL",vi:"Quả bóng",emoji:"⚽",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"DOLL",vi:"Búp bê",emoji:"🪆",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"BRUSH",vi:"Bàn chải",emoji:"🪥",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"CRAYON",vi:"Bút sáp màu",emoji:"🖍️",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"WINDOW",vi:"Cửa sổ",emoji:"🪟",categoryVi:"Đồ vật và phương tiện",categoryEn:"Things & Transport"},
+  {en:"APPLE",vi:"Quả táo",emoji:"🍎",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"BREAD",vi:"Bánh mì",emoji:"🍞",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"CAKE",vi:"Bánh ngọt",emoji:"🍰",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"MILK",vi:"Sữa",emoji:"🥛",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"RICE",vi:"Cơm/gạo",emoji:"🍚",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"JUICE",vi:"Nước ép",emoji:"🧃",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"GRAPE",vi:"Quả nho",emoji:"🍇",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"LEMON",vi:"Quả chanh",emoji:"🍋",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"MANGO",vi:"Quả xoài",emoji:"🥭",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"PEACH",vi:"Quả đào",emoji:"🍑",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"WATER",vi:"Nước",emoji:"💧",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"CLOUD",vi:"Đám mây",emoji:"☁️",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"RAIN",vi:"Mưa",emoji:"🌧️",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"WIND",vi:"Gió",emoji:"💨",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"TREE",vi:"Cây",emoji:"🌳",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"FLOWER",vi:"Bông hoa",emoji:"🌸",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"GRASS",vi:"Cỏ",emoji:"🌱",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"STONE",vi:"Hòn đá",emoji:"🪨",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"RIVER",vi:"Dòng sông",emoji:"🏞️",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"OCEAN",vi:"Đại dương",emoji:"🌊",categoryVi:"Thiên nhiên và thức ăn",categoryEn:"Nature & Food"},
+  {en:"HAPPY",vi:"Vui vẻ",emoji:"😊",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"SMILE",vi:"Nụ cười",emoji:"😁",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"LAUGH",vi:"Cười lớn",emoji:"😂",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"DANCE",vi:"Nhảy múa",emoji:"💃",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"SING",vi:"Hát",emoji:"🎤",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"JUMP",vi:"Nhảy",emoji:"🤸",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"RUN",vi:"Chạy",emoji:"🏃",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"WALK",vi:"Đi bộ",emoji:"🚶",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"HAND",vi:"Bàn tay",emoji:"✋",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"FOOT",vi:"Bàn chân",emoji:"🦶",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"HEAD",vi:"Đầu",emoji:"🙂",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"EYES",vi:"Đôi mắt",emoji:"👀",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"NOSE",vi:"Cái mũi",emoji:"👃",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"MOUTH",vi:"Miệng",emoji:"👄",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"HEART",vi:"Trái tim",emoji:"❤️",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"FAMILY",vi:"Gia đình",emoji:"👨‍👩‍👧",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"FRIEND",vi:"Bạn bè",emoji:"🧑‍🤝‍🧑",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"SCHOOL",vi:"Trường học",emoji:"🏫",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"GARDEN",vi:"Khu vườn",emoji:"🪴",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
+  {en:"PICNIC",vi:"Dã ngoại",emoji:"🧺",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"}
 ];
 const $ = id => document.getElementById(id);
 const state = {index:0,stars:0,language:"vi",placed:[],assignment:{},solved:false,celebrated:false};
 let scene,camera,renderer,raycaster,pointer,tiles=[],slotMeshes=[],dragging=null,dragOffset=new THREE.Vector3(),dragPlane;
 let bankDrag=null;
+let bankDragGhost=null;
 const sceneEl=$("scene");
 const COLORS=["#ff9b91","#79c9ef","#a68af4","#f3c75f","#70d9b0","#f59ac2"];
 
@@ -103,9 +196,11 @@ function createCharacter(letter,index,total){
   }
   const shadow=new THREE.Mesh(new THREE.CircleGeometry(Math.max(.42,glyphWidth*.43),32),new THREE.MeshBasicMaterial({color:0x829baf,transparent:true,opacity:.16}));
   shadow.rotation.x=-Math.PI/2;shadow.position.set(0,-glyphHeight*.5-.16,0);group.add(shadow);
-  group.scale.setScalar(.88);
-  group.position.set((index-(total-1)/2)*1.42,.72,1.85);
-  group.userData={letter,home:group.position.clone(),used:false,phase:index*.7,emotion:"happy",baseScale:.88,body,eyeParts,pupils,mouth,tongue,cheeks,leftArm,rightArm,feet,shadow,blinkAt:1.8+Math.random()*2.5,blink:0,reactUntil:0,glyphWidth,glyphHeight,dragTilt:0};
+  const spacing = total >= 6 ? 1.12 : total === 5 ? 1.24 : 1.42;
+  const characterScale = total >= 6 ? .76 : total === 5 ? .83 : .88;
+  group.scale.setScalar(characterScale);
+  group.position.set((index-(total-1)/2)*spacing,.72,1.85);
+  group.userData={letter,home:group.position.clone(),used:false,phase:index*.7,emotion:"happy",baseScale:characterScale,body,eyeParts,pupils,mouth,tongue,cheeks,leftArm,rightArm,feet,shadow,blinkAt:1.8+Math.random()*2.5,blink:0,reactUntil:0,glyphWidth,glyphHeight,dragTilt:0};
   scene.add(group);
   return group;
 }
@@ -131,15 +226,16 @@ function makeGhostLetterTexture(letter){
   const canvas=document.createElement("canvas");canvas.width=256;canvas.height=256;
   const c=canvas.getContext("2d");c.clearRect(0,0,256,256);
   c.font="1000 190px Nunito,Arial";c.textAlign="center";c.textBaseline="middle";
-  c.fillStyle="rgba(105,87,217,0.24)";c.fillText(letter,128,132);
+  c.fillStyle="rgba(105,87,217,0.34)";c.fillText(letter,128,132);
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;return texture;
 }
 function makeSlot(index,total,letter){
-  const mesh=new THREE.Mesh(new THREE.BoxGeometry(.83,.88,.22),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.58,roughness:.8}));
-  mesh.position.set((index-(total-1)/2)*.96,.22,-.45);
+  const slotGap = total >= 6 ? 1.12 : total === 5 ? 1.24 : 1.42;
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(1.08,1.16,.24),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.72,roughness:.72}));
+  mesh.position.set((index-(total-1)/2)*slotGap,.22,-.45);
   mesh.userData={slotIndex:index,expectedLetter:letter};scene.add(mesh);slotMeshes.push(mesh);
   const outline=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:0x9589dc}));mesh.add(outline);
-  const ghost=new THREE.Mesh(new THREE.PlaneGeometry(.70,.72),new THREE.MeshBasicMaterial({map:makeGhostLetterTexture(letter),transparent:true,depthWrite:false}));
+  const ghost=new THREE.Mesh(new THREE.PlaneGeometry(.94,1.02),new THREE.MeshBasicMaterial({map:makeGhostLetterTexture(letter),transparent:true,depthWrite:false}));
   ghost.position.set(0,0,.116);ghost.name="ghost-letter";mesh.add(ghost);
 }
 function disposeBoard(){
@@ -184,7 +280,7 @@ function renderBoard(){
 }
 function renderUI(){
   const w=word();
-  $("level-label").textContent=(state.language==="vi"?"THỬ THÁCH ":"CHALLENGE ")+(state.index+1);
+  $("level-label").textContent=(state.language==="vi"?"BÀI ":"LESSON ")+(state.index+1)+" / "+WORDS.length+" · "+(state.language==="vi"?w.categoryVi:w.categoryEn);
   $("task-title").textContent=state.language==="vi"?"Ghép từ tiếng Anh":"Spell the English word";
   $("word-meaning").textContent=state.language==="vi"?w.vi:w.en;$("word-pronunciation").textContent=w.en;$("picture-emoji").textContent=w.emoji;
   $("progress-label").textContent=`${state.index+1} / ${WORDS.length}`;$("progress-bar").style.width=`${(state.index+1)/WORDS.length*100}%`;
@@ -249,7 +345,16 @@ function startBankDrag(e,tileIndex){
   if(state.solved||tiles[tileIndex]?.userData.used)return;
   e.preventDefault();
   const source=e.currentTarget;
-  bankDrag={pointerId:e.pointerId,tileIndex,source};
+  // Keep a visible animated creature attached to the pointer. The original
+  // bank item remains faintly visible as the pickup location.
+  const creature=source.querySelector(".bank-creature");
+  if(bankDragGhost)bankDragGhost.remove();
+  bankDragGhost=document.createElement("div");
+  bankDragGhost.className="letter-drag-ghost";
+  bankDragGhost.setAttribute("aria-hidden","true");
+  if(creature)bankDragGhost.appendChild(creature.cloneNode(true));
+  document.body.appendChild(bankDragGhost);
+  bankDrag={pointerId:e.pointerId,tileIndex,source,ghost:bankDragGhost};
   source.classList.add("drag-source");
   source.setPointerCapture?.(e.pointerId);
   dragging=tiles[tileIndex];
@@ -262,17 +367,35 @@ function startBankDrag(e,tileIndex){
 }
 function moveBankDrag(e){
   if(!bankDrag||e.pointerId!==bankDrag.pointerId||!dragging)return;
-  setRay(e);
-  const p=new THREE.Vector3();
-  if(raycaster.ray.intersectPlane(dragPlane,p)){
-    const oldX=dragging.position.x;
-    dragging.position.set(p.x+dragOffset.x,.55,p.z+dragOffset.z);
-    dragging.userData.dragTilt=THREE.MathUtils.clamp((dragging.position.x-oldX)*-2.8,-.42,.42);
+  // DOM creature follows the pointer across both the 3D stage and the answer area.
+  if(bankDrag.ghost){
+    bankDrag.ghost.style.left=`${e.clientX}px`;
+    bankDrag.ghost.style.top=`${e.clientY}px`;
+  }
+  document.querySelectorAll(".slot.drop-hover").forEach(el=>el.classList.remove("drop-hover"));
+  const hoverTarget=document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot");
+  if(hoverTarget)hoverTarget.classList.add("drop-hover");
+  // Move the matching WebGL character while the pointer is over the 3D stage.
+  // Outside the canvas, leave it visible on the stage; the animated pointer
+  // creature bridges the distance to the target slot below.
+  const rect=renderer.domElement.getBoundingClientRect();
+  const inside=e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom;
+  if(inside){
+    setRay(e);
+    const p=new THREE.Vector3();
+    if(raycaster.ray.intersectPlane(dragPlane,p)){
+      const oldX=dragging.position.x;
+      dragging.position.set(p.x+dragOffset.x,.55,p.z+dragOffset.z);
+      dragging.userData.dragTilt=THREE.MathUtils.clamp((dragging.position.x-oldX)*-2.8,-.42,.42);
+    }
   }
 }
 function endBankDrag(e){
   if(!bankDrag||e.pointerId!==bankDrag.pointerId)return;
   const drag=bankDrag;bankDrag=null;drag.source.classList.remove("drag-source");
+  document.querySelectorAll(".slot.drop-hover").forEach(el=>el.classList.remove("drop-hover"));
+  if(drag.ghost){drag.ghost.remove();}
+  bankDragGhost=null;
   const target=document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot");
   const tile=tiles[drag.tileIndex];
   dragging=null;
@@ -323,17 +446,25 @@ function hint(){
 }
 function nextWord(){
   $("celebration").classList.add("hidden");
-  if(state.index<WORDS.length-1){state.index++;renderBoard();}
-  else{
-    $("celebration-title").textContent=state.language==="vi"?"Con đã hoàn thành!":"You did it!";
-    $("celebration-copy").textContent=state.language==="vi"?"Con đã khám phá hết các thử thách.":"You completed all the challenges.";
-    $("celebration-continue").textContent=state.language==="vi"?"Chơi lại":"Play again";
+  if(state.index<WORDS.length-1){
+    state.index++;
+    saveProgress();
+    renderBoard();
+  }else{
+    $("celebration-title").textContent=state.language==="vi"?"Con đã hoàn thành 100 bài học!":"You completed all 100 lessons!";
+    $("celebration-copy").textContent=state.language==="vi"?"Con đã khám phá tất cả 5 chủ đề. Thật tuyệt vời!":"You explored all five learning worlds. Amazing work!";
+    $("celebration-continue").textContent=state.language==="vi"?"Chơi lại từ đầu":"Play again";
     $("celebration").classList.remove("hidden");
-    $("celebration-continue").onclick=()=>{state.index=0;$("celebration").classList.add("hidden");renderBoard();};
   }
 }
-function saveProgress(){try{localStorage.setItem("abc-adventure-progress-v2",JSON.stringify({stars:state.stars,index:state.index}));}catch(e){}}
-function loadProgress(){try{const p=JSON.parse(localStorage.getItem("abc-adventure-progress-v2")||"{}");state.stars=Number(p.stars)||0;}catch(e){}}
+function restartCourse(){
+  state.index=0;
+  saveProgress();
+  $("celebration").classList.add("hidden");
+  renderBoard();
+}
+function saveProgress(){try{localStorage.setItem("abc-adventure-progress-v3",JSON.stringify({stars:state.stars,index:state.index}));}catch(e){}}
+function loadProgress(){try{const p=JSON.parse(localStorage.getItem("abc-adventure-progress-v3")||localStorage.getItem("abc-adventure-progress-v2")||"{}");state.stars=Number(p.stars)||0;state.index=Math.max(0,Math.min(WORDS.length-1,Number(p.index)||0));}catch(e){state.index=0;}}
 
 function setRay(event){
   const rect=renderer.domElement.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);
@@ -402,7 +533,7 @@ function animate(){
 $("listen-button").addEventListener("click",()=>say(state.language==="vi"?word().vi:word().en,state.language));
 $("hint-button").addEventListener("click",hint);
 $("next-button").addEventListener("click",nextWord);
-$("celebration-continue").addEventListener("click",nextWord);
+$("celebration-continue").addEventListener("click",()=>{if(state.index<WORDS.length-1)nextWord();else restartCourse();});
 $("reset-button").addEventListener("click",()=>{state.index=0;state.stars=0;saveProgress();$("celebration").classList.add("hidden");renderBoard();});
 $("language-toggle").addEventListener("click",()=>{state.language=state.language==="vi"?"en":"vi";renderUI();});
 window.addEventListener("online",renderUI);window.addEventListener("offline",renderUI);
