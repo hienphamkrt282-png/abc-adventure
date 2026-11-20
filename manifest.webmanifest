@@ -1,0 +1,19 @@
+{
+  "name": "ABC Adventure World",
+  "short_name": "ABC Adventure",
+  "description": "Trò chơi học chữ và từ vựng Việt - Anh",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f1ff",
+  "theme_color": "#6957d9",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{--ink:#27304a;--muted:#75809a;--purple:#6957d9;--purple-dark:#5142b4;--line:#ecebfa}
+*{box-sizing:border-box}
+html{min-height:100%;background:#f5f3ff}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Nunito,system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f2efff 0%,#f8fbff 52%,#f1fff8 100%);overscroll-behavior-y:none}
+button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
+.app-shell{width:min(100%,900px);margin:auto;padding:0 16px max(18px,env(safe-area-inset-bottom))}
+.topbar{height:70px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-width:0}
+.brand-mark{background:var(--purple);color:#fff;font-weight:1000;border-radius:13px;padding:8px 10px;letter-spacing:-1px;box-shadow:0 4px 0 var(--purple-dark)}
+.brand-name strong,.brand-name small{display:block}.brand-name strong{font-size:15px}.brand-name small{font-size:10px;color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:8px}
+.status-pill,.language-button{border-radius:30px;padding:8px 11px;font-size:11px;font-weight:900;background:#fff;box-shadow:0 3px 12px #403b7a10;white-space:nowrap}
+.status-pill{color:#32966e}.status-pill.offline{color:#b47a25}
+.language-button{color:var(--purple);border:1px solid #e5e0ff}
+.intro{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px 24px 22px;background:linear-gradient(110deg,#e8e2ff,#e1f5ff 65%,#e2fff1);border-radius:24px;overflow:hidden}
+.eyebrow{font-size:10px;font-weight:1000;letter-spacing:1.6px;color:#7669d8;margin:0 0 7px}
+h1{font-size:clamp(22px,4vw,33px);line-height:1.13;margin:0 0 7px;font-weight:1000}
+.intro-copy>p:last-child{margin:0;color:#68738f;font-size:13px}
+.mascot{width:82px;height:82px;flex:none;background:linear-gradient(145deg,#ffd36b,#ff9878);border-radius:38% 45% 42% 45%;transform:rotate(-8deg);position:relative;box-shadow:inset -8px -9px 0 #f07d6c44,0 10px 20px #e58a6b30;margin-right:12px}
+.mascot:before,.mascot:after{content:"";position:absolute;top:-10px;width:22px;height:29px;background:#ffb95c;border-radius:80% 20% 50% 20%;z-index:-1}.mascot:before{left:10px;transform:rotate(-25deg)}.mascot:after{right:8px;transform:rotate(45deg)}
+.mascot-eye{position:absolute;top:30px;width:7px;height:9px;background:#453d58;border-radius:50%}.mascot-eye.left{left:23px}.mascot-eye.right{right:22px}
+.mascot-mouth{position:absolute;left:34px;top:45px;width:15px;height:8px;border-bottom:3px solid #453d58;border-radius:50%}
+.mascot-star{position:absolute;right:-16px;top:0;color:#fff;font-size:22px;text-shadow:0 2px 4px #a18aef}
+.game-card{background:#fff;border:1px solid #eeedf8;border-radius:24px;margin-top:15px;padding:19px 21px;box-shadow:0 12px 35px #4c4a8110}
+.game-heading{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.level-label{font-size:10px;font-weight:1000;color:#9b91df;letter-spacing:1.4px}
+h2{font-size:19px;margin:2px 0 0;font-weight:1000}
+.progress-wrap{width:115px;text-align:right;font-size:11px;font-weight:900;color:var(--muted)}
+.progress-track{height:7px;background:#eeeefa;border-radius:20px;margin-top:6px;overflow:hidden}
+#progress-bar{height:100%;width:12.5%;background:linear-gradient(90deg,#8b7cf5,#63d9b0);border-radius:20px;transition:width .3s}
+.scene-wrap{height:280px;margin:15px 0 13px;border-radius:20px;background:radial-gradient(ellipse at 50% 75%,#d7f6eb 0%,#e9f7ff 55%,#f2efff 100%);position:relative;overflow:hidden}
+#scene{width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+#scene canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+.scene-hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:#7984a0;pointer-events:none;font-weight:800}
+.word-info{display:flex;align-items:center;gap:11px;padding:10px 12px;background:#fafaff;border:1px solid #f0eff9;border-radius:15px}
+.picture-badge{width:49px;height:49px;flex:none;border-radius:14px;background:#fff0cb;display:grid;place-items:center;font-size:29px}
+.word-copy{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.word-copy strong{font-size:15px}.word-copy span{font-size:11px;color:var(--purple);font-weight:1000;letter-spacing:1.5px}
+.listen-button{background:#eeeaff;color:#5c50c9;border-radius:25px;padding:9px 12px;font-size:11px;font-weight:1000;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.answer-area{padding:15px 2px 3px;text-align:center}
+.answer-area>p:first-child{font-size:12px;font-weight:900;color:#6d7791;margin:0 0 11px}
+.slots,.letter-bank{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.slot{width:46px;height:49px;border:2px dashed #c9c4f2;border-radius:12px;background:#faf9ff;display:grid;place-items:center;font-size:21px;font-weight:1000;color:var(--purple)}
+.slot.placeholder{color:rgba(105,87,217,.28);background:#faf9ff}.slot.filled{border-style:solid;background:#eeeaff}.slot.correct{background:#dff8eb;border-color:#71d4a6;color:#26976a}
+.letter-bank{margin-top:12px;min-height:76px;align-items:flex-end;gap:12px}
+/* The lower letter bank is now a row of animated mini 3D-style letter mascots. */
+.letter-tile{--creature:#ff9b91;--creature-dark:#dc7777;position:relative;width:58px;height:72px;padding:0;background:transparent;border:0;box-shadow:none;color:inherit;display:grid;place-items:center;overflow:visible;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;transition:filter .18s ease,opacity .18s ease}
+.letter-tile:nth-child(6n+1){--creature:#ff9b91;--creature-dark:#d96e75}
+.letter-tile:nth-child(6n+2){--creature:#79c9ef;--creature-dark:#3999c5}
+.letter-tile:nth-child(6n+3){--creature:#a68af4;--creature-dark:#765cc9}
+.letter-tile:nth-child(6n+4){--creature:#f3c75f;--creature-dark:#d59b2d}
+.letter-tile:nth-child(6n+5){--creature:#70d9b0;--creature-dark:#35aa83}
+.letter-tile:nth-child(6n+6){--creature:#f59ac2;--creature-dark:#d66c9b}
+.bank-creature{position:relative;width:54px;height:68px;display:block;transform-origin:50% 85%;filter:drop-shadow(0 5px 2px rgba(69,72,112,.16));animation:bank-bob 2.1s ease-in-out infinite}
+.letter-tile:nth-child(2) .bank-creature{animation-delay:-.45s}.letter-tile:nth-child(3) .bank-creature{animation-delay:-.9s}.letter-tile:nth-child(4) .bank-creature{animation-delay:-1.25s}.letter-tile:nth-child(5) .bank-creature{animation-delay:-.65s}
+.bank-glyph{position:absolute;inset:2px 4px 8px;display:grid;place-items:center;font-size:51px;line-height:1;font-weight:1000;letter-spacing:-4px;color:var(--creature);-webkit-text-stroke:1px rgba(255,255,255,.72);text-shadow:1px 2px 0 rgba(255,255,255,.8),2px 4px 0 var(--creature-dark),3px 6px 7px rgba(72,62,125,.2);transform:perspective(90px) rotateX(-5deg)}
+.bank-face{position:absolute;left:50%;top:29px;width:28px;height:18px;transform:translateX(-50%);display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.bank-eye{display:block;width:5px;height:7px;border-radius:50%;background:#302c48;box-shadow:0 0 0 1.5px rgba(255,255,255,.75);animation:bank-blink 4.2s infinite}
+.bank-eye:nth-child(2){animation-delay:.08s}
+.bank-mouth{position:absolute;left:50%;top:11px;width:9px;height:5px;border-bottom:2px solid #302c48;border-radius:0 0 50% 50%;transform:translateX(-50%)}
+.bank-arm{position:absolute;top:35px;width:7px;height:19px;border-radius:9px;background:linear-gradient(90deg,var(--creature-dark),var(--creature));transform-origin:50% 10%;box-shadow:inset 1px 0 1px rgba(255,255,255,.5)}
+.bank-arm-left{left:1px;transform:rotate(28deg);animation:bank-wave-left 1.35s ease-in-out infinite}
+.bank-arm-right{right:1px;transform:rotate(-28deg);animation:bank-wave-right 1.35s ease-in-out infinite}
+.bank-foot{position:absolute;bottom:2px;width:12px;height:7px;border-radius:8px;background:linear-gradient(180deg,#ffe39a,#eebd62);box-shadow:0 2px 0 rgba(184,133,59,.25)}
+.bank-foot-left{left:15px;transform:rotate(10deg);animation:bank-step .65s ease-in-out infinite alternate}
+.bank-foot-right{right:15px;transform:rotate(-10deg);animation:bank-step .65s ease-in-out infinite alternate-reverse}
+@keyframes bank-bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@keyframes bank-wave-left{0%,100%{transform:rotate(28deg)}50%{transform:rotate(-38deg)}}
+@keyframes bank-wave-right{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(38deg)}}
+@keyframes bank-step{from{translate:0 0}to{translate:0 -3px}}
+@keyframes bank-blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
+.letter-tile:hover .bank-creature{animation:bank-excited .55s ease-in-out infinite}
+@keyframes bank-excited{0%,100%{transform:translateY(0) rotate(-7deg) scale(1)}50%{transform:translateY(-9px) rotate(7deg) scale(1.06)}}
+.letter-tile:focus-visible{outline:2px solid #8c7cf0;outline-offset:2px;border-radius:14px}
+.letter-tile.used{opacity:.16;filter:grayscale(.8);pointer-events:none}
+.letter-tile.drag-source{opacity:.18;cursor:grabbing}
+.letter-tile.drag-source .bank-creature{animation:none}
+.feedback{min-height:18px;margin:10px 0 0;font-size:11px;font-weight:900;color:#8a91a7}.feedback.good{color:#25976c}.feedback.try{color:#c58b36}
+.game-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0eff7;padding-top:13px;margin-top:10px}
+.primary-button,.secondary-button,.reset-button{border-radius:25px;padding:10px 15px;font-size:11px;font-weight:1000}
+.primary-button{background:var(--purple);color:white;box-shadow:0 4px 0 var(--purple-dark)}.primary-button:disabled{opacity:.35;box-shadow:none;cursor:not-allowed}
+.secondary-button{background:#fff5d6;color:#98751e}.stars{display:flex;gap:5px;align-items:center;color:#b78b23;font-size:14px}
+.bottom-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 3px}
+.mini-card{display:flex;align-items:center;gap:9px}.mini-icon{font-size:22px}.mini-card strong{font-size:12px}.mini-card p{margin:1px 0 0;color:var(--muted);font-size:10px}
+.reset-button{background:transparent;color:#7e79b9;padding:8px}
+footer{display:flex;justify-content:space-between;gap:8px;color:#9aa1b4;font-size:9px;padding:8px 4px}
+.celebration{position:fixed;inset:0;background:#28234488;display:grid;place-items:center;padding:20px;z-index:10}
+.celebration.hidden{display:none}.celebration-card{background:white;border-radius:24px;padding:26px;text-align:center;width:min(100%,330px);box-shadow:0 20px 70px #211b4a55}
+.celebration-emoji{font-size:55px}.celebration-card h2{font-size:24px}.celebration-card p{color:var(--muted);font-size:13px}
+@media(max-width:600px){
+ .app-shell{padding:0 10px max(14px,env(safe-area-inset-bottom))}
+ .topbar{height:60px}.brand-mark{padding:7px 8px;font-size:13px}.brand-name strong{font-size:13px}.brand-name small{font-size:9px}
+ .top-actions{gap:5px}.status-pill{font-size:9px;padding:7px 8px}.language-button{font-size:10px;padding:7px 9px}
+ .intro{padding:16px 15px;border-radius:19px}.eyebrow{font-size:8px;letter-spacing:1.1px}h1{font-size:22px}.intro-copy>p:last-child{font-size:11px;max-width:245px}
+ .mascot{width:64px;height:64px;margin-right:5px}.mascot-eye{top:23px;width:6px;height:7px}.mascot-eye.left{left:18px}.mascot-eye.right{right:17px}.mascot-mouth{left:27px;top:36px;width:12px;height:7px}
+ .game-card{padding:14px 11px;border-radius:19px;margin-top:11px}.game-heading h2{font-size:16px}.level-label{font-size:9px}.progress-wrap{width:86px;font-size:10px}
+ .scene-wrap{height:230px;margin:12px 0}.scene-hint{font-size:9px}
+ .word-info{gap:8px;padding:8px}.picture-badge{width:43px;height:43px;font-size:25px}.word-copy strong{font-size:13px}.word-copy span{font-size:10px}
+ .listen-button{padding:9px 9px;font-size:9px;gap:4px}
+ .answer-area{padding-top:12px}.answer-area>p:first-child{font-size:11px}
+ .slots,.letter-bank{gap:6px}.slot{width:39px;height:44px;font-size:19px;border-radius:10px}.letter-tile{width:52px;height:68px}.bank-creature{transform:scale(.92);transform-origin:bottom center}
+ .game-footer{padding-top:11px}.primary-button,.secondary-button{padding:9px 11px;font-size:10px}
+ .bottom-row{align-items:center}.mini-card p{max-width:155px}.reset-button{font-size:10px}
+ footer{flex-direction:column;text-align:center}
+}
+@media(max-width:360px){.status-pill{display:none}.scene-wrap{height:205px}.listen-button span:last-child{display:none}.slot{width:35px}.letter-tile{width:48px;height:64px}.bank-creature{transform:scale(.86);transform-origin:bottom center}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* Real pointer-based drag and drop from the letter bank into matching slots */
+.letter-tile{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.letter-tile.drag-source{opacity:.28;cursor:grabbing}
+.letter-drag-ghost{position:fixed!important;z-index:99999!important;pointer-events:none!important;margin:0!important;opacity:.96;transform:scale(1.08);box-shadow:0 10px 24px rgba(76,62,160,.25)!important}
+.slot{transition:background .15s ease,border-color .15s ease,transform .15s ease}
+.slot:active{transform:scale(.97)}

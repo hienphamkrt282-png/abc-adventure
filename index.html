@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#6957d9">
+  <meta name="description" content="ABC Adventure World - trò chơi học chữ và từ vựng Việt Anh cho trẻ em.">
+  <title>ABC Adventure World</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="ABC Adventure World">
+        <span class="brand-mark">ABC</span>
+        <span class="brand-name"><strong>ABC Adventure</strong><small>Thế giới chữ cái</small></span>
+      </a>
+      <div class="top-actions">
+        <span id="connection-status" class="status-pill">Đang kiểm tra…</span>
+        <button id="language-toggle" class="language-button" type="button">VI / EN</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div class="intro-copy">
+          <p class="eyebrow" id="eyebrow">HỌC MÀ CHƠI – CHƠI MÀ HỌC</p>
+          <h1 id="headline">Cùng khám phá thế giới chữ cái!</h1>
+          <p id="subheadline">Gặp gỡ những người bạn chữ cái và cùng ghép từ nhé.</p>
+        </div>
+        <div class="mascot" aria-hidden="true"><span class="mascot-eye left"></span><span class="mascot-eye right"></span><span class="mascot-mouth"></span><span class="mascot-star">★</span></div>
+      </section>
+
+      <section class="game-card">
+        <div class="game-heading">
+          <div><span class="level-label" id="level-label">THỬ THÁCH 1</span><h2 id="task-title">Ghép từ tiếng Anh</h2></div>
+          <div class="progress-wrap"><span id="progress-label">1 / 8</span><div class="progress-track"><div id="progress-bar"></div></div></div>
+        </div>
+
+        <div class="scene-wrap">
+          <div id="scene" aria-label="Sân chơi chữ cái 3D"></div>
+          <div class="scene-hint" id="scene-hint">Chạm vào nhân vật chữ cái để kéo</div>
+        </div>
+
+        <div class="word-info">
+          <div class="picture-badge" id="picture-emoji">🐱</div>
+          <div class="word-copy"><strong id="word-meaning">Con mèo</strong><span id="word-pronunciation">CAT</span></div>
+          <button id="listen-button" class="listen-button" type="button"><span>🔊</span><span id="listen-label">Nghe phát âm</span></button>
+        </div>
+
+        <div class="answer-area">
+          <p id="answer-instruction">Kéo từng chữ vào ô có chữ mờ giống nó:</p>
+          <div id="slots" class="slots" aria-label="Các vị trí ghép chữ"></div>
+          <div id="letter-bank" class="letter-bank" aria-label="Các chữ cái để chọn"></div>
+          <p id="feedback" class="feedback" aria-live="polite">Con thử nhé! Không sao nếu chưa đúng.</p>
+        </div>
+
+        <div class="game-footer">
+          <button id="hint-button" class="secondary-button" type="button">💡 Gợi ý</button>
+          <div class="stars"><span>⭐</span><strong id="star-count">0</strong></div>
+          <button id="next-button" class="primary-button" type="button" disabled>Tiếp theo →</button>
+        </div>
+      </section>
+
+      <section class="bottom-row">
+        <div class="mini-card"><span class="mini-icon">🌱</span><div><strong id="encourage-title">Mỗi ngày một chút</strong><p id="encourage-copy">Con đang tiến bộ qua từng lần thử!</p></div></div>
+        <button id="reset-button" class="reset-button" type="button">↻ Chơi lại từ đầu</button>
+      </section>
+    </main>
+    <footer><span>ABC Adventure World · Version 0.5.1</span><span id="offline-note">Tải game một lần để chuẩn bị chơi ngoại tuyến.</span></footer>
+  </div>
+
+  <div id="celebration" class="celebration hidden" role="dialog" aria-modal="true" aria-labelledby="celebration-title">
+    <div class="celebration-card"><div class="celebration-emoji">🎉</div><h2 id="celebration-title">Tuyệt vời!</h2><p id="celebration-copy">Con đã ghép đúng từ này.</p><button id="celebration-continue" class="primary-button" type="button">Chơi tiếp →</button></div>
+  </div>
+
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+  </script>
+  <script src="./register-sw.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
