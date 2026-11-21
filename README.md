@@ -1,6 +1,6 @@
-# ABC Adventure World — Version 0.9
+# ABC Adventure World — Version 0.9.2
 
-## Có gì mới trong Version 0.9
+## Có gì mới trong Version 0.9.2
 
 - Khi chưa chạm: chữ giữ kiểu chữ trang trí lớn, nhiều màu như mẫu giấy, không có tay chân/mắt/miệng.
 - Khi giữ và kéo: mắt, miệng, tay, chân xuất hiện; nhân vật nhún, vẫy tay, bước chân và miệng chuyển động.
@@ -14,7 +14,7 @@
 - **Nhạc nền vui tươi nguyên bản** được tổng hợp trực tiếp bằng Web Audio API, không cần tải tệp nhạc bên ngoài. Nhạc tự bắt đầu sau thao tác đầu tiên của người chơi để tuân thủ giới hạn autoplay của trình duyệt.
 - Có nút **Nhạc: Bật/Tắt**; lựa chọn được lưu trên thiết bị. Nhạc tự giảm âm lượng khi phát âm từ/câu để giọng đọc rõ hơn.
 - Giữ nguyên **100 bài học**, nội dung Việt/Anh, lặp phát âm tên chữ cái trong suốt lúc giữ/kéo, đọc từ hoàn chỉnh và đoạn văn tình huống khi ghép đúng, gợi ý, sao thưởng, lưu tiến trình và PWA.
-- Đổi tên cache Service Worker sang Version 0.9 để trình duyệt nhận biết bộ giao diện mới.
+- Đổi tên cache Service Worker sang Version 0.9.2 để trình duyệt nhận biết bộ giao diện mới.
 
 ## Chạy thử trên Windows 10/11
 
@@ -37,7 +37,7 @@
 3. Chọn **Add file → Upload files**.
 4. Tải toàn bộ nội dung bên trong thư mục `abc_adventure_web_v09` lên thư mục gốc repository, ghi đè các tệp trùng tên.
 5. Nếu GitHub hỏi về tệp trùng tên, xác nhận cập nhật; giữ nguyên thư mục `assets` và tải các tệp bên trong nếu có thay đổi.
-6. Nhập commit message `Update ABC Adventure Version 0.9` rồi nhấn **Commit changes**.
+6. Nhập commit message `Update ABC Adventure Version 0.9.2` rồi nhấn **Commit changes**.
 7. Chờ Pages triển khai xong. Nếu trình duyệt còn bản cũ, tải lại cứng bằng `Ctrl + Shift + R`.
 
 ## Ghi chú về nhạc và ngoại tuyến
@@ -107,3 +107,10 @@ Mã JavaScript được kiểm tra cú pháp và cấu trúc ZIP được kiểm
 - Picking up a letter plays its English letter name once.
 - Completing a word speaks the complete word followed by a short English example sentence.
 - Service Worker cache name bumped to v0.7 to prevent old files being reused.
+
+
+## Version 0.9.2 – English story reading
+- The success dialog now displays the complete English mini-story.
+- A readable IPA transcription is shown below the English paragraph.
+- A dedicated button replays the English paragraph using the browser English voice.
+- Service Worker cache name updated to force clients to fetch the new app files.

@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-v09-talking-letters-context-story";
+const CACHE_NAME="abc-adventure-v092-story-ipa-repeat";
 const CORE=["./","./index.html","./styles.css","./app.js","./manifest.webmanifest","./register-sw.js","./assets/icon.svg"];
 const THREE_URL="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 const FONT_LOADER_URL="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/FontLoader.js";
