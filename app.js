@@ -106,6 +106,7 @@ const WORDS = [
   {en:"GARDEN",vi:"Khu vườn",emoji:"🪴",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"},
   {en:"PICNIC",vi:"Dã ngoại",emoji:"🧺",categoryVi:"Cơ thể và hoạt động",categoryEn:"Body & Actions"}
 ];
+const EXAMPLE_SENTENCES = {"CAT": "I see a cat.", "DOG": "The dog can run.", "SUN": "The sun is bright.", "BUS": "I ride the bus.", "PEN": "I write with a pen.", "CUP": "This is my cup.", "HAT": "I wear a hat.", "BED": "I sleep in my bed.", "BAG": "My bag is blue.", "MAP": "Look at the map.", "PIG": "The pig is pink.", "FOX": "The fox is clever.", "ANT": "A tiny ant is here.", "EGG": "I eat an egg.", "BOX": "The toy is in the box.", "KEY": "I have a key.", "FAN": "The fan is spinning.", "BAT": "A bat flies at night.", "CAR": "The car is red.", "TOY": "This is my toy.", "BIRD": "The bird can fly.", "FISH": "The fish can swim.", "DUCK": "The duck says quack.", "FROG": "The frog can jump.", "LION": "The lion is strong.", "BEAR": "The bear is big.", "DEER": "The deer runs fast.", "GOAT": "The goat eats grass.", "SHEEP": "The sheep is soft.", "HORSE": "The horse can run.", "MOUSE": "The mouse is small.", "TIGER": "The tiger has stripes.", "ZEBRA": "The zebra has stripes.", "PANDA": "The panda eats bamboo.", "MONKEY": "The monkey can climb.", "RABBIT": "The rabbit can hop.", "TURTLE": "The turtle walks slowly.", "CAMEL": "The camel lives in the desert.", "SNAKE": "The snake is long.", "WHALE": "The whale is huge.", "BOOK": "I read a book.", "DESK": "My book is on the desk.", "CHAIR": "Please sit on the chair.", "TABLE": "The cup is on the table.", "CLOCK": "The clock tells time.", "PHONE": "My phone can ring.", "TRAIN": "The train is long.", "PLANE": "The plane can fly.", "TRUCK": "The truck is big.", "BIKE": "I ride my bike.", "BOAT": "The boat is on the water.", "DOOR": "Please open the door.", "LAMP": "The lamp is bright.", "SOCK": "I wear a sock.", "SHOE": "This shoe is new.", "BALL": "Kick the ball.", "DOLL": "The doll is pretty.", "BRUSH": "I brush my hair.", "CRAYON": "I draw with a crayon.", "WINDOW": "Look out of the window.", "APPLE": "I eat an apple.", "BREAD": "I like fresh bread.", "CAKE": "The cake is sweet.", "MILK": "I drink milk.", "RICE": "I eat rice.", "JUICE": "The juice is yummy.", "GRAPE": "A grape is small.", "LEMON": "The lemon is yellow.", "MANGO": "The mango is sweet.", "PEACH": "The peach is soft.", "WATER": "I drink water.", "CLOUD": "A cloud is in the sky.", "RAIN": "The rain is falling.", "WIND": "The wind is blowing.", "TREE": "The tree is tall.", "FLOWER": "The flower is beautiful.", "GRASS": "The grass is green.", "STONE": "This stone is hard.", "RIVER": "The river flows.", "OCEAN": "The ocean is blue.", "HAPPY": "I am happy today.", "SMILE": "I smile at my friend.", "LAUGH": "We laugh together.", "DANCE": "I love to dance.", "SING": "I like to sing.", "JUMP": "I can jump high.", "RUN": "I can run fast.", "WALK": "I walk to school.", "HAND": "I clap my hands.", "FOOT": "I have two feet.", "HEAD": "Touch your head.", "EYES": "I see with my eyes.", "NOSE": "I smell with my nose.", "MOUTH": "I speak with my mouth.", "HEART": "My heart beats.", "FAMILY": "I love my family.", "FRIEND": "You are my friend.", "SCHOOL": "I go to school.", "GARDEN": "Flowers grow in the garden.", "PICNIC": "We have a picnic."};
 const $ = id => document.getElementById(id);
 const state = {index:0,stars:0,language:"vi",placed:[],assignment:{},solved:false,celebrated:false};
 let scene,camera,renderer,raycaster,pointer,tiles=[],slotMeshes=[],dragging=null,dragOffset=new THREE.Vector3(),dragPlane;
@@ -114,13 +115,108 @@ let bankDragGhost=null;
 const sceneEl=$("scene");
 const COLORS=["#ff9b91","#79c9ef","#a68af4","#f3c75f","#70d9b0","#f59ac2"];
 
+// Original, lightweight synthesized background tune. It starts after the first
+// real user gesture to respect Chrome/mobile autoplay rules; no external music file is needed.
+const MUSIC_KEY="abc-adventure-music-enabled-v09";
+let musicEnabled=localStorage.getItem(MUSIC_KEY)!=="off";
+let musicContext=null,musicMaster=null,musicTimer=null,musicStep=0;
+const MUSIC_NOTES=[523.25,659.25,783.99,659.25,587.33,698.46,783.99,698.46,523.25,587.33,659.25,587.33,493.88,587.33,659.25,523.25];
+function updateMusicButton(){
+  const b=$("music-toggle");if(!b)return;
+  b.textContent=musicEnabled?(state.language==="vi"?"♫ Nhạc: Bật":"♫ Music: On"):(state.language==="vi"?"♫ Nhạc: Tắt":"♫ Music: Off");
+  b.setAttribute("aria-pressed",String(musicEnabled));
+}
+function playMusicNote(freq,when,duration=.34){
+  if(!musicContext||!musicMaster)return;
+  const osc=musicContext.createOscillator(),gain=musicContext.createGain();
+  osc.type="triangle";osc.frequency.setValueAtTime(freq,when);
+  gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(.10,when+.045);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
+  osc.connect(gain);gain.connect(musicMaster);osc.start(when);osc.stop(when+duration+.03);
+}
+function scheduleMusicLoop(){
+  if(!musicEnabled||!musicContext)return;
+  const start=musicContext.currentTime+.08;
+  for(let i=0;i<MUSIC_NOTES.length;i++){
+    const t=start+i*.39;playMusicNote(MUSIC_NOTES[(musicStep+i)%MUSIC_NOTES.length],t,.32);
+    if(i%4===0){
+      const pad=musicContext.createOscillator(),pg=musicContext.createGain();pad.type="sine";pad.frequency.setValueAtTime(MUSIC_NOTES[(musicStep+i)%MUSIC_NOTES.length]/2,t);
+      pg.gain.setValueAtTime(.0001,t);pg.gain.linearRampToValueAtTime(.018,t+.12);pg.gain.exponentialRampToValueAtTime(.0001,t+1.45);pad.connect(pg);pg.connect(musicMaster);pad.start(t);pad.stop(t+1.48);
+    }
+  }
+  musicStep=(musicStep+8)%MUSIC_NOTES.length;
+  musicTimer=setTimeout(scheduleMusicLoop,MUSIC_NOTES.length*390);
+}
+async function startMusic(){
+  if(!musicEnabled)return;
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;
+  if(!musicContext){musicContext=new AudioCtx();musicMaster=musicContext.createGain();musicMaster.gain.value=.34;musicMaster.connect(musicContext.destination);}
+  if(musicContext.state==="suspended")await musicContext.resume();
+  if(!musicTimer)scheduleMusicLoop();
+}
+function stopMusic(){
+  musicEnabled=false;localStorage.setItem(MUSIC_KEY,"off");
+  if(musicTimer){clearTimeout(musicTimer);musicTimer=null;}
+  if(musicMaster&&musicContext)musicMaster.gain.setTargetAtTime(.0001,musicContext.currentTime,.12);
+  updateMusicButton();
+}
+function enableMusic(){
+  musicEnabled=true;localStorage.setItem(MUSIC_KEY,"on");
+  if(musicMaster&&musicContext)musicMaster.gain.setTargetAtTime(.34,musicContext.currentTime,.18);
+  startMusic();updateMusicButton();
+}
+function toggleMusic(){musicEnabled?stopMusic():enableMusic();}
+
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function word(){return WORDS[state.index];}
 function say(text,lang=state.language){
   if(!("speechSynthesis" in window))return;
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-US":"vi-VN";u.rate=.82;u.pitch=1.06;window.speechSynthesis.speak(u);
+  const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-US":"vi-VN";u.rate=.82;u.pitch=1.06;u.onstart=duckMusicForSpeech;u.onend=restoreMusicAfterSpeech;window.speechSynthesis.speak(u);
 }
+let letterSpeechToken=0,letterSpeechTimer=null,activeLetterSpeech=null;
+function speakLetterLoopStep(letter,token){
+  if(token!==letterSpeechToken||!activeLetterSpeech||!("speechSynthesis" in window))return;
+  const utterance=new SpeechSynthesisUtterance(letter);
+  utterance.lang="en-US";utterance.rate=.72;utterance.pitch=1.16;
+  utterance.onstart=duckMusicForSpeech;
+  utterance.onend=()=>{
+    if(token!==letterSpeechToken||!activeLetterSpeech)return;
+    letterSpeechTimer=setTimeout(()=>speakLetterLoopStep(letter,token),110);
+  };
+  utterance.onerror=()=>{if(token===letterSpeechToken&&activeLetterSpeech){letterSpeechTimer=setTimeout(()=>speakLetterLoopStep(letter,token),180);}};
+  window.speechSynthesis.speak(utterance);
+}
+function startLetterLoop(letter){
+  stopLetterLoop();
+  if(!("speechSynthesis" in window))return;
+  activeLetterSpeech=letter;const token=++letterSpeechToken;
+  window.speechSynthesis.cancel();
+  speakLetterLoopStep(letter,token);
+}
+function stopLetterLoop(){
+  letterSpeechToken++;activeLetterSpeech=null;
+  if(letterSpeechTimer){clearTimeout(letterSpeechTimer);letterSpeechTimer=null;}
+  if("speechSynthesis" in window)window.speechSynthesis.cancel();
+  restoreMusicAfterSpeech();
+}
+
+function saySequence(parts,lang="en"){
+  if(!("speechSynthesis" in window))return;
+  window.speechSynthesis.cancel();
+  const queue=parts.filter(Boolean);
+  const speakNext=()=>{
+    if(!queue.length){restoreMusicAfterSpeech();return;}
+    const u=new SpeechSynthesisUtterance(queue.shift());
+    u.lang=lang==="en"?"en-US":"vi-VN";u.rate=.78;u.pitch=1.08;
+    u.onstart=duckMusicForSpeech;
+    u.onend=()=>{restoreMusicAfterSpeech();if(queue.length)setTimeout(speakNext,220);};
+    window.speechSynthesis.speak(u);
+  };
+  speakNext();
+}
+function duckMusicForSpeech(){if(musicMaster&&musicContext&&musicEnabled)musicMaster.gain.setTargetAtTime(.10,musicContext.currentTime,.08);}
+function restoreMusicAfterSpeech(){if(musicMaster&&musicContext&&musicEnabled)musicMaster.gain.setTargetAtTime(.34,musicContext.currentTime,.25);}
+
 function roundedRectShape(w,h,r){
   const s=new THREE.Shape();const x=-w/2,y=-h/2;
   s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
@@ -197,7 +293,7 @@ function createCharacter(letter,index,total){
   const shadow=new THREE.Mesh(new THREE.CircleGeometry(Math.max(.42,glyphWidth*.43),32),new THREE.MeshBasicMaterial({color:0x829baf,transparent:true,opacity:.16}));
   shadow.rotation.x=-Math.PI/2;shadow.position.set(0,-glyphHeight*.5-.16,0);group.add(shadow);
   const spacing = total >= 6 ? 1.12 : total === 5 ? 1.24 : 1.42;
-  const characterScale = total >= 6 ? .76 : total === 5 ? .83 : .88;
+  const characterScale = total >= 6 ? .90 : total === 5 ? .98 : 1.04;
   group.scale.setScalar(characterScale);
   group.position.set((index-(total-1)/2)*spacing,.72,1.85);
   group.userData={letter,home:group.position.clone(),used:false,phase:index*.7,emotion:"happy",baseScale:characterScale,body,eyeParts,pupils,mouth,tongue,cheeks,leftArm,rightArm,feet,shadow,blinkAt:1.8+Math.random()*2.5,blink:0,reactUntil:0,glyphWidth,glyphHeight,dragTilt:0};
@@ -268,7 +364,7 @@ function resize(){
   if(!renderer)return;const w=Math.max(1,sceneEl.clientWidth),h=Math.max(1,sceneEl.clientHeight);
   camera.aspect=w/h;
   // Wider camera framing on narrow screens so every draggable character remains visible.
-  camera.fov=w<480?42:35;camera.position.set(0,w<480?6.0:5.4,w<480?12.5:10.5);camera.lookAt(0,0,0);camera.updateProjectionMatrix();
+  camera.fov=w<480?42:35;camera.position.set(0,w<480?5.8:5.1,w<480?11.7:9.8);camera.lookAt(0,0,0);camera.updateProjectionMatrix();
   renderer.setSize(w,h,false);
 }
 function renderBoard(){
@@ -288,10 +384,15 @@ function renderUI(){
   $("slots").innerHTML="";
   state.placed.forEach((letter,i)=>{const b=document.createElement("button");b.type="button";b.className="slot"+(letter?" filled":"")+(state.solved?" correct":"");b.dataset.slotIndex=String(i);b.textContent=letter||w.en[i];b.classList.toggle("placeholder",!letter);b.setAttribute("aria-label",`Ô chữ ${i+1}: ${letter||"chữ "+w.en[i]}`);b.addEventListener("click",()=>removeLetter(i));$("slots").appendChild(b);});
   $("letter-bank").innerHTML="";
+  $("slots").style.setProperty("--word-length",String(w.en.length));
+  const upper=tiles.map((_,i)=>i).filter(i=>i%2===0),lower=tiles.map((_,i)=>i).filter(i=>i%2===1);
   tiles.forEach((tile,i)=>{
     const b=document.createElement("button");b.type="button";
     b.className="letter-tile"+(tile.userData.used?" used":"");
     b.disabled=tile.userData.used;b.dataset.tileIndex=String(i);
+    const row=i%2===0?upper:lower,position=row.indexOf(i),x=(position+1)/(row.length+1)*100;
+    b.style.left=`${x}%`;b.style.top=i%2===0?"17%":"78%";
+    b.style.setProperty("--letter-tilt",`${((i*17)%13)-6}deg`);
     // Animated mini letter-creature in the bank. The matching Three.js character
     // above remains the real object that follows the pointer during dragging.
     b.innerHTML=`<span class="bank-creature" aria-hidden="true">
@@ -306,8 +407,8 @@ function renderUI(){
   });
   $("next-button").disabled=!state.solved;
   $("feedback").textContent=state.language==="vi"?"Hãy kéo mỗi chữ vào ô có chữ mờ giống nó nhé!":"Drag each letter onto its matching faint guide!";$("feedback").className="feedback";
-  $("scene-hint").textContent=state.language==="vi"?"Chạm hoặc kéo các nhân vật chữ cái vào ô trống":"Tap or drag the letter friends into the slots";
-  $("answer-instruction").textContent=state.language==="vi"?"Kéo các bạn chữ cái vào đúng vị trí:":"Drag the letter friends into the right places:";
+  $("scene-hint").textContent=state.language==="vi"?"Kéo từng chữ cái vào đúng vị trí":"Drag each letter into its place";
+  $("answer-instruction").textContent=state.language==="vi"?"Kéo các chữ cái vào đúng vị trí:":"Drag the letters into the right places:";
   $("listen-label").textContent=state.language==="vi"?"Nghe phát âm":"Listen";
   $("encourage-title").textContent=state.language==="vi"?"Mỗi ngày một chút":"A little every day";
   $("encourage-copy").textContent=state.language==="vi"?"Con đang tiến bộ qua từng lần thử!":"You learn something with every try!";
@@ -322,6 +423,7 @@ function renderUI(){
   $("celebration-continue").textContent=state.language==="vi"?"Chơi tiếp →":"Continue →";
   $("connection-status").textContent=navigator.onLine?(state.language==="vi"?"● Trực tuyến":"● Online"):(state.language==="vi"?"● Ngoại tuyến":"● Offline");
   $("connection-status").classList.toggle("offline",!navigator.onLine);
+  updateMusicButton();
 }
 function usedBankIndices(){return new Set(Object.values(state.assignment));}
 function showTryAgain(){
@@ -345,6 +447,8 @@ function startBankDrag(e,tileIndex){
   if(state.solved||tiles[tileIndex]?.userData.used)return;
   e.preventDefault();
   const source=e.currentTarget;
+  // Repeat the letter name while the child is holding the letter; stop on release.
+  startLetterLoop(tiles[tileIndex].userData.letter);
   // Keep a visible animated creature attached to the pointer. The original
   // bank item remains faintly visible as the pickup location.
   const creature=source.querySelector(".bank-creature");
@@ -352,7 +456,29 @@ function startBankDrag(e,tileIndex){
   bankDragGhost=document.createElement("div");
   bankDragGhost.className="letter-drag-ghost";
   bankDragGhost.setAttribute("aria-hidden","true");
-  if(creature)bankDragGhost.appendChild(creature.cloneNode(true));
+  if(creature){
+    const activeCreature=creature.cloneNode(true);
+    activeCreature.classList.add("is-active");
+    // The drag ghost is moved to document.body, outside the original tile.
+    // Copy the tile's palette explicitly so CSS nth-child variables and
+    // gradients remain intact while the letter follows the pointer.
+    const tileStyle=getComputedStyle(source);
+    ["--creature","--creature-dark","--letter-tilt"].forEach(name=>{
+      const value=tileStyle.getPropertyValue(name).trim();
+      if(value) activeCreature.style.setProperty(name,value);
+    });
+    const sourceGlyph=creature.querySelector(".bank-glyph");
+    const activeGlyph=activeCreature.querySelector(".bank-glyph");
+    if(sourceGlyph&&activeGlyph){
+      const glyphStyle=getComputedStyle(sourceGlyph);
+      activeGlyph.style.backgroundImage=glyphStyle.backgroundImage;
+      activeGlyph.style.backgroundSize=glyphStyle.backgroundSize;
+      activeGlyph.style.backgroundPosition=glyphStyle.backgroundPosition;
+      activeGlyph.style.webkitTextFillColor=glyphStyle.webkitTextFillColor;
+      activeGlyph.style.color=glyphStyle.color;
+    }
+    bankDragGhost.appendChild(activeCreature);
+  }
   document.body.appendChild(bankDragGhost);
   bankDrag={pointerId:e.pointerId,tileIndex,source,ghost:bankDragGhost};
   source.classList.add("drag-source");
@@ -361,6 +487,7 @@ function startBankDrag(e,tileIndex){
   setRay(e);
   const startPoint=new THREE.Vector3();if(raycaster.ray.intersectPlane(dragPlane,startPoint))dragOffset.copy(dragging.position).sub(startPoint);
   setEmotion(dragging,"surprised",2.5);
+  dragging.userData.talking=true;
   dragging.scale.setScalar(dragging.userData.baseScale*1.16);
   dragging.userData.dragTilt=0;
   moveBankDrag(e);
@@ -392,12 +519,14 @@ function moveBankDrag(e){
 }
 function endBankDrag(e){
   if(!bankDrag||e.pointerId!==bankDrag.pointerId)return;
+  stopLetterLoop();
   const drag=bankDrag;bankDrag=null;drag.source.classList.remove("drag-source");
   document.querySelectorAll(".slot.drop-hover").forEach(el=>el.classList.remove("drop-hover"));
   if(drag.ghost){drag.ghost.remove();}
   bankDragGhost=null;
   const target=document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot");
   const tile=tiles[drag.tileIndex];
+  if(tile)tile.userData.talking=false;
   dragging=null;
   if(target){
     const slotIndex=Number(target.dataset.slotIndex);
@@ -435,7 +564,18 @@ function success(){
   state.solved=true;state.stars++;saveProgress();
   $("feedback").textContent=state.language==="vi"?"Chính xác! Con làm rất tốt!":"Correct! Well done!";$("feedback").className="feedback good";
   $("next-button").disabled=false;document.querySelectorAll(".slot").forEach(el=>el.classList.add("correct"));
-  tiles.forEach(t=>setEmotion(t,"excited",2.2));burstAt(new THREE.Vector3(0,.7,0),0xffd76b,28);say(word().en,"en");
+  tiles.forEach(t=>setEmotion(t,"excited",2.2));burstAt(new THREE.Vector3(0,.7,0),0xffd76b,28);
+  const example=EXAMPLE_SENTENCES[word().en]||`This is ${word().en.toLowerCase()}.`;
+  const context=`At school, my teacher shows me a picture. ${example} I say the word ${word().en.toLowerCase()} aloud and smile.`;
+  // Read the completed word, then a short story that places the example sentence in context.
+  saySequence([word().en,context],"en");
+  $("celebration-copy").textContent=state.language==="vi"
+    ?`Con ghép đúng ${word().en}!
+
+Tình huống: Ở lớp, cô giáo cho con xem một bức tranh. ${example} Con đọc lại từ ${word().en} và mỉm cười.`
+    :`You spelled ${word().en}!
+
+At school, my teacher shows me a picture. ${example} I say the word ${word().en.toLowerCase()} aloud and smile.`;
   setTimeout(()=>{$("celebration").classList.remove("hidden");},400);
 }
 function hint(){
@@ -475,14 +615,14 @@ function onPointerDown(e){
   if(!hits.length)return;
   let root=hits[0].object;while(root.parent&&root.parent!==scene)root=root.parent;
   if(!tiles.includes(root))return;
-  dragging=root;renderer.domElement.setPointerCapture?.(e.pointerId);
+  dragging=root;startLetterLoop(root.userData.letter);root.userData.talking=true;renderer.domElement.setPointerCapture?.(e.pointerId);
   const p=new THREE.Vector3();raycaster.ray.intersectPlane(dragPlane,p);dragOffset.copy(dragging.position).sub(p);setEmotion(dragging,"surprised",1);dragging.scale.setScalar(dragging.userData.baseScale*1.08);
 }
 function onPointerMove(e){
   if(!dragging)return;setRay(e);const p=new THREE.Vector3();if(raycaster.ray.intersectPlane(dragPlane,p)){dragging.position.x=p.x+dragOffset.x;dragging.position.z=p.z+dragOffset.z;dragging.position.y=.4;}
 }
 function onPointerUp(e){
-  if(!dragging)return;setRay(e);const tile=dragging;dragging=null;
+  if(!dragging)return;stopLetterLoop();setRay(e);const tile=dragging;tile.userData.talking=false;dragging=null;
   const hits=raycaster.intersectObjects(slotMeshes,false);
   if(hits.length){const i=hits[0].object.userData.slotIndex;if(state.placed[i]===null){
     if(tile.userData.letter===word().en[i]){
@@ -501,6 +641,7 @@ function animate(){
       if(d.body){const pulse=1+Math.sin(dt*18+d.phase)*.045;d.body.scale.set(1/pulse,pulse,1);}
       if(d.leftArm&&d.rightArm){const wave=Math.sin(dt*17+d.phase)*1.05;d.leftArm.rotation.z=.65+wave;d.rightArm.rotation.z=-.65-wave;}
       if(d.feet)d.feet.forEach((foot,j)=>foot.rotation.z=Math.sin(dt*18+d.phase+j)*.28);
+      if(d.mouth){const talk=0.55+Math.abs(Math.sin(dt*19+d.phase))*.9;d.mouth.scale.set(1,talk,1);}
       if(d.pupils)d.pupils.forEach((p,j)=>{p.position.x=.018+Math.sin(dt*5+j)*.025;p.position.y=-.006+Math.cos(dt*6+j)*.018;});
       return;
     }
@@ -531,6 +672,9 @@ function animate(){
 }
 
 $("listen-button").addEventListener("click",()=>say(state.language==="vi"?word().vi:word().en,state.language));
+$("music-toggle").addEventListener("click",toggleMusic);
+document.addEventListener("pointerdown",()=>{if(musicEnabled)startMusic();},{once:true});
+document.addEventListener("keydown",()=>{if(musicEnabled)startMusic();},{once:true});
 $("hint-button").addEventListener("click",hint);
 $("next-button").addEventListener("click",nextWord);
 $("celebration-continue").addEventListener("click",()=>{if(state.index<WORDS.length-1)nextWord();else restartCourse();});
@@ -540,7 +684,9 @@ window.addEventListener("online",renderUI);window.addEventListener("offline",ren
 document.addEventListener("pointermove",moveBankDrag);
 document.addEventListener("pointerup",endBankDrag);
 document.addEventListener("pointercancel",endBankDrag);
+window.addEventListener("blur",()=>{if(bankDrag){stopLetterLoop();if(bankDragGhost)bankDragGhost.remove();bankDragGhost=null;bankDrag.source.classList.remove("drag-source");if(dragging){dragging.userData.talking=false;dragging.position.copy(dragging.userData.home);dragging.scale.setScalar(dragging.userData.baseScale);setEmotion(dragging,"happy",.8);dragging=null;}bankDrag=null;}});
 
+updateMusicButton();
 loadProgress();
 initThree();
 // Load a real extruded typeface so each letter is the character's silhouette.

@@ -1,1 +1,2 @@
-ABC Adventure Version 0.6\n100 bài học trong 5 chủ đề; ô đích 3D và ô đáp án được phóng lớn; cải thiện gợi ý vùng thả; giữ cơ chế kéo thả nhân vật 3D. Xem README.md để chạy thử và triển khai GitHub Pages.\n
+ABC Adventure Version 0.8
+One large paper-style letter playfield, oversized draggable letters, original synthesized background music with on/off control.

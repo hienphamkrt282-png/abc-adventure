@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
   <meta name="theme-color" content="#6957d9">
   <meta name="description" content="ABC Adventure World - trò chơi học chữ và từ vựng Việt Anh cho trẻ em.">
-  <title>ABC Adventure World · 100 bài học</title>
+  <title>ABC Adventure World · Version 0.9 · 100 bài học</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
@@ -19,6 +19,7 @@
       </a>
       <div class="top-actions">
         <span id="connection-status" class="status-pill">Đang kiểm tra…</span>
+        <button id="music-toggle" class="music-button" type="button" aria-pressed="true">♫ Nhạc: Bật</button>
         <button id="language-toggle" class="language-button" type="button">VI / EN</button>
       </div>
     </header>
@@ -39,22 +40,21 @@
           <div class="progress-wrap"><span id="progress-label">1 / 100</span><div class="progress-track"><div id="progress-bar" style="width:1%"></div></div></div>
         </div>
 
-        <div class="scene-wrap">
-          <div id="scene" aria-label="Sân chơi chữ cái 3D"></div>
-          <div class="scene-hint" id="scene-hint">Chạm vào nhân vật chữ cái để kéo</div>
+        <div class="scene-wrap letter-paper-board">
+          <div id="scene" aria-hidden="true"></div>
+          <div class="letter-playfield" aria-label="Khu vực chữ cái duy nhất">
+            <p id="answer-instruction" class="board-instruction">Kéo các chữ cái vào đúng vị trí:</p>
+            <div id="slots" class="slots" aria-label="Từ cần hoàn thành"></div>
+            <div id="letter-bank" class="letter-bank" aria-label="Các chữ cái để kéo"></div>
+            <p id="feedback" class="feedback" aria-live="polite">Hãy kéo từng chữ cái vào đúng vị trí nhé!</p>
+          </div>
+          <div class="scene-hint" id="scene-hint">Kéo từng chữ cái vào đúng vị trí</div>
         </div>
 
         <div class="word-info">
           <div class="picture-badge" id="picture-emoji">🐱</div>
           <div class="word-copy"><strong id="word-meaning">Con mèo</strong><span id="word-pronunciation">CAT</span></div>
           <button id="listen-button" class="listen-button" type="button"><span>🔊</span><span id="listen-label">Nghe phát âm</span></button>
-        </div>
-
-        <div class="answer-area">
-          <p id="answer-instruction">Kéo từng chữ vào ô có chữ mờ giống nó:</p>
-          <div id="slots" class="slots" aria-label="Các vị trí ghép chữ"></div>
-          <div id="letter-bank" class="letter-bank" aria-label="Các chữ cái để chọn"></div>
-          <p id="feedback" class="feedback" aria-live="polite">Con thử nhé! Không sao nếu chưa đúng.</p>
         </div>
 
         <div class="game-footer">
@@ -69,7 +69,7 @@
         <button id="reset-button" class="reset-button" type="button">↻ Chơi lại từ đầu</button>
       </section>
     </main>
-    <footer><span>ABC Adventure World · Version 0.6 · 100 bài học</span><span id="offline-note">Tải game một lần để chuẩn bị chơi ngoại tuyến.</span></footer>
+    <footer><span>ABC Adventure World · Version 0.9 · 100 bài học</span><span id="offline-note">Tải game một lần để chuẩn bị chơi ngoại tuyến.</span></footer>
   </div>
 
   <div id="celebration" class="celebration hidden" role="dialog" aria-modal="true" aria-labelledby="celebration-title">

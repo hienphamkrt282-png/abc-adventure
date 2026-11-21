@@ -13,6 +13,7 @@ button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
 .status-pill,.language-button{border-radius:30px;padding:8px 11px;font-size:11px;font-weight:900;background:#fff;box-shadow:0 3px 12px #403b7a10;white-space:nowrap}
 .status-pill{color:#32966e}.status-pill.offline{color:#b47a25}
 .language-button{color:var(--purple);border:1px solid #e5e0ff}
+.music-button{border-radius:30px;padding:8px 11px;font-size:11px;font-weight:1000;background:#fff5d6;color:#8e6b16;border:1px solid #f5e5b6;white-space:nowrap;box-shadow:0 3px 12px #403b7a10}.music-button[aria-pressed="false"]{background:#f1f1f6;color:#7d8496;border-color:#e6e7ee}
 .intro{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px 24px 22px;background:linear-gradient(110deg,#e8e2ff,#e1f5ff 65%,#e2fff1);border-radius:24px;overflow:hidden}
 .eyebrow{font-size:10px;font-weight:1000;letter-spacing:1.6px;color:#7669d8;margin:0 0 7px}
 h1{font-size:clamp(22px,4vw,33px);line-height:1.13;margin:0 0 7px;font-weight:1000}
@@ -110,7 +111,7 @@ footer{display:flex;justify-content:space-between;gap:8px;color:#9aa1b4;font-siz
 .letter-tile{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
 .letter-tile.drag-source{opacity:.38;cursor:grabbing;filter:saturate(.8)}
 .letter-drag-ghost{position:fixed;left:0;top:0;width:64px;height:78px;display:grid;place-items:center;z-index:99999;pointer-events:none;margin:0;opacity:1;transform:translate(-50%,-58%) scale(1.18);filter:drop-shadow(0 12px 12px rgba(76,62,160,.28));will-change:left,top;overflow:visible}
-.letter-drag-ghost .bank-creature{animation:bank-excited .42s ease-in-out infinite!important;filter:drop-shadow(0 7px 3px rgba(69,72,112,.2))}
+.letter-drag-ghost .bank-creature{animation:held-letter-bounce .42s ease-in-out infinite!important;filter:drop-shadow(0 7px 3px rgba(69,72,112,.2))}
 .letter-drag-ghost .bank-arm-left{animation:bank-wave-left .42s ease-in-out infinite}
 .letter-drag-ghost .bank-arm-right{animation:bank-wave-right .42s ease-in-out infinite}
 .slot{transition:background .15s ease,border-color .15s ease,transform .15s ease}
@@ -120,3 +121,112 @@ footer{display:flex;justify-content:space-between;gap:8px;color:#9aa1b4;font-siz
 .slot.drop-hover{border-style:solid;border-color:#7b6ce4;background:#eeeaff;transform:translateY(-3px) scale(1.04);box-shadow:0 7px 0 rgba(105,87,217,.12),0 0 0 4px rgba(137,121,239,.10)}
 .answer-area{scroll-margin-top:12px}
 @media(max-width:600px){.level-label{font-size:8px;letter-spacing:.45px;max-width:235px}.slots{gap:7px}}
+
+
+/* Version 0.7: oversized child-friendly letters and clear drop targets */
+.answer-area{padding-top:20px}
+.answer-area>p:first-child{font-size:clamp(13px,1.35vw,17px);margin-bottom:15px}
+.slots{gap:clamp(8px,1.2vw,14px)}
+.slot{width:clamp(68px,7.6vw,92px);height:clamp(72px,8vw,98px);font-size:clamp(32px,3.2vw,44px);border-radius:18px;border-width:3px;box-shadow:0 5px 0 rgba(105,87,217,.09)}
+.letter-bank{min-height:clamp(112px,13vw,145px);margin-top:16px;gap:clamp(10px,1.6vw,20px);align-items:flex-end}
+.letter-tile{width:clamp(82px,9vw,112px);height:clamp(106px,12vw,138px)}
+.bank-creature{width:clamp(78px,8.4vw,104px);height:clamp(100px,10.8vw,128px)}
+.bank-glyph{font-size:clamp(70px,7.2vw,92px);inset:0 4px 12px;letter-spacing:-6px;-webkit-text-stroke:1.5px rgba(255,255,255,.78)}
+.bank-face{top:clamp(42px,4.2vw,54px);width:clamp(36px,3.8vw,46px);height:24px}
+.bank-eye{width:7px;height:9px}.bank-mouth{top:14px;width:12px;height:7px}
+.bank-arm{top:clamp(50px,5.2vw,64px);height:25px;width:9px}
+.bank-foot{bottom:4px;width:17px;height:9px}
+.letter-drag-ghost{width:clamp(90px,10vw,120px);height:clamp(112px,12vw,145px);transform:translate(-50%,-58%) scale(1.12)}
+.scene-wrap{height:clamp(270px,32vw,390px)}
+.feedback{font-size:clamp(12px,1.15vw,14px);min-height:22px}
+@media(max-width:600px){
+ .scene-wrap{height:270px}
+ .answer-area{padding-top:18px}
+ .answer-area>p:first-child{font-size:13px}
+ .slots{gap:7px}
+ .slot{width:clamp(60px,16vw,76px);height:clamp(64px,17vw,82px);font-size:32px;border-radius:16px}
+ .letter-bank{min-height:116px;gap:7px;margin-top:12px}
+ .letter-tile{width:clamp(70px,19vw,86px);height:106px}
+ .bank-creature{width:76px;height:98px}
+ .bank-glyph{font-size:70px;inset:0 3px 10px;letter-spacing:-5px}
+ .bank-face{top:42px;width:34px;height:20px}
+ .bank-eye{width:6px;height:8px}.bank-mouth{top:12px;width:10px}
+ .bank-arm{top:48px;height:22px;width:8px}
+ .bank-foot{width:14px;height:8px}
+ .letter-drag-ghost{width:84px;height:104px}
+}
+@media(max-width:380px){.letter-tile{width:68px}.slot{width:58px;height:62px}.letter-bank{gap:4px}}
+
+
+/* Version 0.8 — one large paper-like letter playfield, inspired by the supplied reference. */
+.game-card{padding:clamp(12px,2vw,22px)}
+.word-info{margin-bottom:12px}
+.letter-paper-board{height:clamp(440px,64vh,650px);min-height:440px;margin:12px 0 10px;border:1px solid #eadfce;border-radius:18px;overflow:hidden;position:relative;background-color:#fff4e5;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 65px,rgba(177,151,130,.16) 66px,transparent 68px),linear-gradient(115deg,rgba(255,255,255,.55),rgba(255,248,235,.15));box-shadow:inset 0 0 50px rgba(168,126,92,.10),0 5px 16px rgba(111,91,74,.08)}
+.letter-paper-board:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.52),transparent 68%);pointer-events:none;z-index:0}
+#scene{position:absolute;inset:0;opacity:0;pointer-events:none}
+#scene canvas{opacity:0;pointer-events:none}
+.letter-playfield{position:absolute;inset:0;z-index:2}
+.board-instruction{position:absolute;top:3.5%;left:0;right:0;margin:0;padding:0 12px;text-align:center;color:#8a7a70;font-size:clamp(12px,1.4vw,17px);font-weight:900;letter-spacing:.02em}
+.slots{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:94%;display:flex;justify-content:center;align-items:center;gap:clamp(3px,.9vw,14px);flex-wrap:nowrap;z-index:3;--word-length:3}
+.slot{flex:0 1 auto;width:clamp(42px,calc(72vw / var(--word-length)),116px);height:clamp(78px,13vh,142px);border:0;border-radius:5px;background:transparent;box-shadow:none;display:grid;place-items:center;font-family:Nunito,system-ui,sans-serif;font-size:clamp(48px,9vw,112px);line-height:1;font-weight:1000;color:transparent;-webkit-text-stroke:2px rgba(107,83,78,.58);text-shadow:1px 2px 0 rgba(255,255,255,.65);padding:0;transition:transform .18s,color .18s,filter .18s}
+.slot.placeholder{color:transparent;background:transparent;border:0}
+.slot.filled{color:#6555c9;-webkit-text-stroke:0;text-shadow:2px 4px 0 rgba(70,55,160,.16);background:transparent;border:0}
+.slot.correct{color:#249b70;background:transparent;border:0;filter:drop-shadow(0 4px 3px rgba(45,155,110,.18))}
+.slot.drop-hover{transform:translateY(-7px) scale(1.08);background:rgba(255,255,255,.45);border-radius:12px;outline:3px dashed rgba(105,87,217,.55);box-shadow:0 0 0 7px rgba(105,87,217,.08)}
+.letter-bank{position:absolute;inset:0;margin:0;min-height:0;display:block;z-index:4;pointer-events:none}
+.letter-tile{position:absolute;left:50%;top:50%;width:clamp(76px,10vw,136px);height:clamp(110px,17vh,170px);display:grid;place-items:center;padding:0;pointer-events:auto;transform:translate(-50%,-50%);background:transparent;border:0;overflow:visible}
+.bank-creature{width:100%;height:100%;filter:drop-shadow(2px 7px 2px rgba(90,66,60,.17));animation:paper-letter-float 2.6s ease-in-out infinite}
+.bank-glyph{inset:0;display:grid;place-items:center;font-family:Nunito,system-ui,sans-serif;font-size:clamp(76px,12vw,148px);line-height:.9;font-weight:1000;letter-spacing:-.08em;color:var(--creature);-webkit-text-stroke:1px rgba(255,255,255,.7);text-shadow:2px 3px 0 rgba(255,255,255,.75),4px 7px 0 var(--creature-dark),5px 10px 10px rgba(86,62,53,.2);transform:rotate(var(--letter-tilt,0deg));background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.24) 0 5px,transparent 5px 11px),linear-gradient(135deg,var(--creature),var(--creature-dark));background-size:13px 13px,100% 100%;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.letter-tile:nth-child(6n+1) .bank-glyph{color:#f2a51e}.letter-tile:nth-child(6n+2) .bank-glyph{color:#dc4ba4}.letter-tile:nth-child(6n+3) .bank-glyph{color:#8252d8}.letter-tile:nth-child(6n+4) .bank-glyph{color:#35b95c}.letter-tile:nth-child(6n+5) .bank-glyph{color:#ee514d}.letter-tile:nth-child(6n+6) .bank-glyph{color:#2875d8}
+/* Resting letters stay clean like the supplied reference. Character features appear only while held. */
+.bank-face,.bank-arm,.bank-foot{display:none;opacity:0}
+.letter-drag-ghost .bank-creature.is-active .bank-face{display:flex;opacity:1;animation:held-face-pop .22s ease-out both}
+.letter-drag-ghost .bank-creature.is-active .bank-arm{display:block;opacity:1}
+.letter-drag-ghost .bank-creature.is-active .bank-foot{display:block;opacity:1}
+.letter-drag-ghost .bank-creature.is-active .bank-arm-left{animation:bank-wave-left .34s ease-in-out infinite}
+.letter-drag-ghost .bank-creature.is-active .bank-arm-right{animation:bank-wave-right .34s ease-in-out infinite}
+.letter-drag-ghost .bank-creature.is-active .bank-foot-left{animation:bank-step .28s ease-in-out infinite alternate}
+.letter-drag-ghost .bank-creature.is-active .bank-foot-right{animation:bank-step .28s ease-in-out infinite alternate-reverse}
+.letter-drag-ghost .bank-creature.is-active .bank-mouth{animation:letter-mouth-talk .22s ease-in-out infinite alternate;transform-origin:center}
+.letter-drag-ghost .bank-creature.is-active{animation:held-letter-bounce .42s ease-in-out infinite;filter:drop-shadow(0 10px 5px rgba(90,66,60,.25))}
+@keyframes held-face-pop{from{transform:translateX(-50%) scale(.35);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+@keyframes held-letter-bounce{0%,100%{transform:translateY(0) rotate(-5deg) scale(1.02)}50%{transform:translateY(-9px) rotate(5deg) scale(1.09)}}
+@keyframes letter-mouth-talk{from{height:3px;width:7px;border-radius:50%}to{height:9px;width:8px;border-radius:50%}}
+.letter-tile.used{opacity:.13;filter:grayscale(.75);pointer-events:none}
+.letter-tile.drag-source{opacity:.5;filter:none}
+/* Keep the picked-up letter fully saturated and colorful in its floating drag copy. */
+.letter-drag-ghost .bank-glyph{
+  opacity:1;
+  filter:saturate(1.35) brightness(1.04);
+  -webkit-text-fill-color:transparent;
+  text-shadow:2px 3px 0 rgba(255,255,255,.82),4px 7px 0 var(--creature-dark),5px 10px 10px rgba(86,62,53,.24);
+}
+.letter-drag-ghost .bank-creature.is-active{
+  opacity:1;
+  filter:saturate(1.3) drop-shadow(0 11px 7px rgba(90,66,60,.28));
+}
+.letter-tile:hover .bank-creature{animation:paper-letter-wiggle .48s ease-in-out infinite}
+@keyframes paper-letter-float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes paper-letter-wiggle{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.08)}}
+.feedback{position:absolute;left:12px;right:12px;bottom:5%;min-height:24px;margin:0;text-align:center;font-size:clamp(12px,1.25vw,16px);color:#897c72}
+.feedback.try{color:#bd792e}.feedback.good{color:#25976c}
+.scene-hint{display:none}
+.game-footer{margin-top:8px}
+.letter-drag-ghost{width:clamp(90px,12vw,150px);height:clamp(130px,18vh,180px);transform:translate(-50%,-55%) scale(1.08)}
+.letter-drag-ghost .bank-glyph{font-size:clamp(88px,13vw,150px)}
+@media(max-width:600px){
+ .top-actions{gap:4px}.music-button{font-size:9px;padding:7px 8px}.language-button{font-size:9px;padding:7px 8px}
+ .letter-paper-board{height:clamp(470px,66vh,590px);min-height:470px;margin:10px 0;border-radius:14px}
+ .board-instruction{top:4%;font-size:12px}
+ .slots{top:47%;width:98%;gap:2px}
+ .slot{width:clamp(38px,calc(82vw / var(--word-length)),76px);height:clamp(68px,12vh,100px);font-size:clamp(44px,12vw,76px);-webkit-text-stroke:1.5px rgba(107,83,78,.58)}
+ .letter-tile{width:clamp(66px,17vw,94px);height:clamp(100px,16vh,130px)}
+ .bank-glyph{font-size:clamp(72px,17vw,104px);letter-spacing:-.08em}
+ .feedback{bottom:4%;font-size:11px}
+ .word-info{margin-bottom:8px}
+}
+@media(max-width:380px){.letter-paper-board{min-height:450px;height:450px}.letter-tile{width:64px;height:98px}.bank-glyph{font-size:70px}}
+@media(prefers-reduced-motion:reduce){.bank-creature{animation:none!important}}
+
+/* Version 0.9: contextual read-aloud text */
+.celebration-card p{white-space:pre-line;line-height:1.65;font-size:14px}
