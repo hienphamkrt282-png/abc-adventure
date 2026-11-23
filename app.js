@@ -170,52 +170,124 @@ function toggleMusic(){musicEnabled?stopMusic():enableMusic();}
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function word(){return WORDS[state.index];}
-function say(text,lang=state.language){
-  if(!("speechSynthesis" in window))return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);u.lang=lang==="en"?"en-US":"vi-VN";u.rate=.82;u.pitch=1.06;u.onstart=duckMusicForSpeech;u.onend=restoreMusicAfterSpeech;window.speechSynthesis.speak(u);
-}
+// Hybrid audio: prerecorded clips are preferred when present; Web Speech is the
+// offline/device fallback. The v0.10 package ships the clip manifest scaffold;
+// actual studio recordings can be added without changing game logic.
+const RECORDED_AUDIO = { letters:{}, words:{}, stories:{} };
+let activeRecordedAudio=null;
+let speechQueue=[];
+let speechBusy=false;
+let speechGeneration=0;
+let availableVoices=[];
+let voicesReady=false;
 let letterSpeechToken=0,letterSpeechTimer=null,activeLetterSpeech=null;
+
+function refreshSpeechVoices(){
+  if(!('speechSynthesis' in window))return;
+  availableVoices=window.speechSynthesis.getVoices()||[];
+  voicesReady=availableVoices.length>0;
+}
+if('speechSynthesis' in window){
+  refreshSpeechVoices();
+  window.speechSynthesis.addEventListener?.('voiceschanged',refreshSpeechVoices);
+}
+function pickVoice(lang){
+  refreshSpeechVoices();
+  const prefix=lang==='en'?'en':'vi';
+  const preferred=lang==='en'?['en-US','en-GB','en-AU','en-CA']:['vi-VN','vi'];
+  for(const code of preferred){const found=availableVoices.find(v=>v.lang?.toLowerCase()===code.toLowerCase());if(found)return found;}
+  return availableVoices.find(v=>v.lang?.toLowerCase().startsWith(prefix))||null;
+}
+function stopRecordedAudio(){
+  if(activeRecordedAudio){try{activeRecordedAudio.pause();activeRecordedAudio.currentTime=0;}catch(e){}activeRecordedAudio=null;}
+}
+function stopSpeech(){
+  speechGeneration++;speechQueue=[];speechBusy=false;
+  stopRecordedAudio();
+  if('speechSynthesis' in window){try{window.speechSynthesis.cancel();}catch(e){}}
+  restoreMusicAfterSpeech();
+}
+function playRecordedClip(url){
+  return new Promise(resolve=>{
+    if(!url){resolve(false);return;}
+    const audio=new Audio(url);activeRecordedAudio=audio;audio.preload='auto';
+    let settled=false;
+    const finish=ok=>{if(settled)return;settled=true;if(activeRecordedAudio===audio)activeRecordedAudio=null;resolve(ok);};
+    audio.addEventListener('ended',()=>finish(true),{once:true});
+    audio.addEventListener('error',()=>finish(false),{once:true});
+    const result=audio.play();
+    if(result&&typeof result.catch==='function')result.catch(()=>finish(false));
+  });
+}
+function recordedClipFor(text,lang,kind,keyHint){
+  if(lang!=='en')return null;
+  const key=String(keyHint||text||'').trim().toUpperCase();
+  const group=RECORDED_AUDIO[kind]||{};
+  return group[key]||null;
+}
+function speakWithDevice(text,lang,generation){
+  return new Promise(resolve=>{
+    if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){resolve(false);return;}
+    const utterance=new SpeechSynthesisUtterance(text);
+    utterance.lang=lang==='en'?'en-US':'vi-VN';
+    utterance.rate=lang==='en'?.82:.86;utterance.pitch=1.04;
+    const voice=pickVoice(lang);if(voice)utterance.voice=voice;
+    let finished=false;
+    const finish=ok=>{if(finished)return;finished=true;resolve(ok);};
+    utterance.onstart=duckMusicForSpeech;
+    utterance.onend=()=>finish(true);
+    utterance.onerror=()=>finish(false);
+    if(generation!==speechGeneration){finish(false);return;}
+    try{window.speechSynthesis.resume?.();window.speechSynthesis.speak(utterance);}catch(e){finish(false);}
+    // Some WebKit builds occasionally leave an utterance queued without firing
+    // callbacks. Do not leave the game's speech manager locked forever.
+    setTimeout(()=>{if(!finished&&generation===speechGeneration){try{window.speechSynthesis.cancel();}catch(e){}finish(false);}},Math.max(12000,Math.min(45000,text.length*180)));
+  });
+}
+async function playSpeechItem(item,generation){
+  if(generation!==speechGeneration)return;
+  const clip=recordedClipFor(item.text,item.lang,item.kind,item.key);
+  if(clip){const played=await playRecordedClip(clip);if(played||generation!==speechGeneration)return;}
+  if(generation===speechGeneration)await speakWithDevice(item.text,item.lang,generation);
+}
+async function runSpeechQueue(generation){
+  if(speechBusy||generation!==speechGeneration)return;
+  speechBusy=true;
+  while(speechQueue.length&&generation===speechGeneration){
+    const item=speechQueue.shift();await playSpeechItem(item,generation);
+    if(generation===speechGeneration&&speechQueue.length)await new Promise(r=>setTimeout(r,180));
+  }
+  if(generation===speechGeneration){speechBusy=false;restoreMusicAfterSpeech();}
+}
+function enqueueSpeech(text,lang='en',kind='words',interrupt=true,key=null){
+  const clean=String(text||'').trim();if(!clean)return;
+  if(interrupt)stopSpeech();
+  const generation=speechGeneration;
+  speechQueue.push({text:clean,lang,kind,key});
+  runSpeechQueue(generation);
+}
+function say(text,lang=state.language,kind='words',key=null){enqueueSpeech(text,lang,kind,true,key);}
+function saySequence(parts,lang='en'){
+  stopSpeech();const generation=speechGeneration;
+  speechQueue=parts.filter(Boolean).map(item=>typeof item==='string'?({text:item,lang,kind:'words'}):({...item,lang:item.lang||lang}));runSpeechQueue(generation);
+}
 function speakLetterLoopStep(letter,token){
-  if(token!==letterSpeechToken||!activeLetterSpeech||!("speechSynthesis" in window))return;
-  const utterance=new SpeechSynthesisUtterance(letter);
-  utterance.lang="en-US";utterance.rate=.72;utterance.pitch=1.16;
-  utterance.onstart=duckMusicForSpeech;
-  utterance.onend=()=>{
-    if(token!==letterSpeechToken||!activeLetterSpeech)return;
-    letterSpeechTimer=setTimeout(()=>speakLetterLoopStep(letter,token),110);
-  };
-  utterance.onerror=()=>{if(token===letterSpeechToken&&activeLetterSpeech){letterSpeechTimer=setTimeout(()=>speakLetterLoopStep(letter,token),180);}};
-  window.speechSynthesis.speak(utterance);
+  if(token!==letterSpeechToken||!activeLetterSpeech)return;
+  enqueueSpeech(letter,'en','letters',true);
+  // Repeating at a moderate interval avoids the rapid cancel/speak loop that
+  // caused missing utterances on iPadOS Safari.
+  letterSpeechTimer=setTimeout(()=>{if(token===letterSpeechToken&&activeLetterSpeech)speakLetterLoopStep(letter,token);},1500);
 }
 function startLetterLoop(letter){
-  stopLetterLoop();
-  if(!("speechSynthesis" in window))return;
-  activeLetterSpeech=letter;const token=++letterSpeechToken;
-  window.speechSynthesis.cancel();
+  stopLetterLoop();activeLetterSpeech=letter;const token=++letterSpeechToken;
   speakLetterLoopStep(letter,token);
 }
 function stopLetterLoop(){
   letterSpeechToken++;activeLetterSpeech=null;
   if(letterSpeechTimer){clearTimeout(letterSpeechTimer);letterSpeechTimer=null;}
-  if("speechSynthesis" in window)window.speechSynthesis.cancel();
-  restoreMusicAfterSpeech();
+  stopSpeech();
 }
 
-function saySequence(parts,lang="en"){
-  if(!("speechSynthesis" in window))return;
-  window.speechSynthesis.cancel();
-  const queue=parts.filter(Boolean);
-  const speakNext=()=>{
-    if(!queue.length){restoreMusicAfterSpeech();return;}
-    const u=new SpeechSynthesisUtterance(queue.shift());
-    u.lang=lang==="en"?"en-US":"vi-VN";u.rate=.78;u.pitch=1.08;
-    u.onstart=duckMusicForSpeech;
-    u.onend=()=>{restoreMusicAfterSpeech();if(queue.length)setTimeout(speakNext,220);};
-    window.speechSynthesis.speak(u);
-  };
-  speakNext();
-}
 function duckMusicForSpeech(){if(musicMaster&&musicContext&&musicEnabled)musicMaster.gain.setTargetAtTime(.10,musicContext.currentTime,.08);}
 function restoreMusicAfterSpeech(){if(musicMaster&&musicContext&&musicEnabled)musicMaster.gain.setTargetAtTime(.34,musicContext.currentTime,.25);}
 
@@ -359,7 +431,7 @@ function initThree(){
   renderer.domElement.addEventListener("pointerdown",onPointerDown);
   renderer.domElement.addEventListener("pointermove",onPointerMove);
   renderer.domElement.addEventListener("pointerup",onPointerUp);
-  renderer.domElement.addEventListener("pointercancel",onPointerUp);
+  renderer.domElement.addEventListener("pointercancel",onPointerCancel);
   animate();
 }
 function resize(){
@@ -484,7 +556,7 @@ function startBankDrag(e,tileIndex){
   document.body.appendChild(bankDragGhost);
   bankDrag={pointerId:e.pointerId,tileIndex,source,ghost:bankDragGhost};
   source.classList.add("drag-source");
-  source.setPointerCapture?.(e.pointerId);
+  try{if(source.setPointerCapture&&e.pointerId!==undefined)source.setPointerCapture(e.pointerId);}catch(err){}
   dragging=tiles[tileIndex];
   setRay(e);
   const startPoint=new THREE.Vector3();if(raycaster.ray.intersectPlane(dragPlane,startPoint))dragOffset.copy(dragging.position).sub(startPoint);
@@ -496,6 +568,7 @@ function startBankDrag(e,tileIndex){
 }
 function moveBankDrag(e){
   if(!bankDrag||e.pointerId!==bankDrag.pointerId||!dragging)return;
+  if(e.cancelable)e.preventDefault();
   // DOM creature follows the pointer across both the 3D stage and the answer area.
   if(bankDrag.ghost){
     bankDrag.ghost.style.left=`${e.clientX}px`;
@@ -519,14 +592,15 @@ function moveBankDrag(e){
     }
   }
 }
-function endBankDrag(e){
+function endBankDrag(e,cancelled=false){
   if(!bankDrag||e.pointerId!==bankDrag.pointerId)return;
+  if(e.cancelable)e.preventDefault();
   stopLetterLoop();
   const drag=bankDrag;bankDrag=null;drag.source.classList.remove("drag-source");
   document.querySelectorAll(".slot.drop-hover").forEach(el=>el.classList.remove("drop-hover"));
   if(drag.ghost){drag.ghost.remove();}
   bankDragGhost=null;
-  const target=document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot");
+  const target=cancelled?null:document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot");
   const tile=tiles[drag.tileIndex];
   if(tile)tile.userData.talking=false;
   dragging=null;
@@ -574,7 +648,7 @@ function success(){
   $("story-ipa").textContent=STORY_IPA[word().en]||"IPA transcription is not available for this story.";
   $("story-listen").textContent=state.language==="vi"?"🔊 Nghe lại đoạn văn":"🔊 Listen to the story again";
   // Read the completed word first, then the complete English story.
-  saySequence([word().en,context],"en");
+  saySequence([{text:word().en,kind:"words",key:word().en},{text:context,kind:"stories",key:word().en}],"en");
   $("celebration-copy").textContent=state.language==="vi"
     ?`Con ghép đúng ${word().en}!
 
@@ -635,6 +709,12 @@ function onPointerUp(e){
   }}
   tile.position.copy(tile.userData.home);tile.scale.setScalar(tile.userData.baseScale);setEmotion(tile,"happy",.8);
 }
+function onPointerCancel(e){
+  if(!dragging)return;
+  stopLetterLoop();const tile=dragging;tile.userData.talking=false;dragging=null;
+  tile.position.copy(tile.userData.home);tile.rotation.set(0,0,0);tile.scale.setScalar(tile.userData.baseScale);
+  tile.userData.dragTilt=0;setEmotion(tile,"happy",.8);
+}
 function animate(){
   requestAnimationFrame(animate);const t=performance.now()*.001;
   tiles.forEach((g,i)=>{
@@ -677,19 +757,25 @@ function animate(){
 
 $("listen-button").addEventListener("click",()=>say(state.language==="vi"?word().vi:word().en,state.language));
 $("music-toggle").addEventListener("click",toggleMusic);
-document.addEventListener("pointerdown",()=>{if(musicEnabled)startMusic();},{once:true});
-document.addEventListener("keydown",()=>{if(musicEnabled)startMusic();},{once:true});
+const unlockMedia=()=>{if(musicEnabled)startMusic();};
+document.addEventListener("pointerdown",unlockMedia,{passive:true});
+document.addEventListener("touchend",unlockMedia,{passive:true});
+document.addEventListener("keydown",unlockMedia);
 $("hint-button").addEventListener("click",hint);
 $("next-button").addEventListener("click",nextWord);
-$("story-listen").addEventListener("click",()=>{const passage=$("story-english").textContent.trim();if(passage)say(passage,"en");});
+$("story-listen").addEventListener("click",()=>{const passage=$("story-english").textContent.trim();if(passage)say(passage,"en","stories",word().en);});
 $("celebration-continue").addEventListener("click",()=>{if(state.index<WORDS.length-1)nextWord();else restartCourse();});
 $("reset-button").addEventListener("click",()=>{state.index=0;state.stars=0;saveProgress();$("celebration").classList.add("hidden");renderBoard();});
 $("language-toggle").addEventListener("click",()=>{state.language=state.language==="vi"?"en":"vi";renderUI();});
 window.addEventListener("online",renderUI);window.addEventListener("offline",renderUI);
-document.addEventListener("pointermove",moveBankDrag);
-document.addEventListener("pointerup",endBankDrag);
-document.addEventListener("pointercancel",endBankDrag);
-window.addEventListener("blur",()=>{if(bankDrag){stopLetterLoop();if(bankDragGhost)bankDragGhost.remove();bankDragGhost=null;bankDrag.source.classList.remove("drag-source");if(dragging){dragging.userData.talking=false;dragging.position.copy(dragging.userData.home);dragging.scale.setScalar(dragging.userData.baseScale);setEmotion(dragging,"happy",.8);dragging=null;}bankDrag=null;}});
+document.addEventListener("pointermove",moveBankDrag,{capture:true,passive:false});
+document.addEventListener("pointerup",e=>endBankDrag(e,false),{capture:true});
+document.addEventListener("pointercancel",e=>endBankDrag(e,true),{capture:true});
+document.addEventListener("lostpointercapture",e=>{if(bankDrag&&e.pointerId===bankDrag.pointerId)endBankDrag(e,true);},true);
+document.addEventListener("contextmenu",e=>{if(bankDrag)e.preventDefault();});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){if(bankDrag)endBankDrag({pointerId:bankDrag.pointerId,clientX:-9999,clientY:-9999,preventDefault(){}},true);stopLetterLoop();}});
+window.addEventListener("pageshow",()=>{if(musicEnabled&&musicContext?.state==="suspended")startMusic();});
+window.addEventListener("blur",()=>{if(bankDrag)endBankDrag({pointerId:bankDrag.pointerId,clientX:-9999,clientY:-9999,preventDefault(){}},true);else if(dragging)onPointerCancel({});stopLetterLoop();});
 
 updateMusicButton();
 loadProgress();
